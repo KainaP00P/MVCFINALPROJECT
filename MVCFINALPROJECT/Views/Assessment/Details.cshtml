@@ -1,0 +1,338 @@
+﻿@{
+    ViewBag.Title = "Assessment Details";
+    ViewBag.ActiveMenu = "Assessment";
+
+    var assessment = ViewBag.Assessment as System.Data.DataRow;
+    var terms = ViewBag.PaymentTerms as System.Data.DataTable;
+    var payments = ViewBag.Payments as System.Data.DataTable;
+}
+
+<div class="row">
+
+    <!-- ── LEFT COLUMN: Assessment Info ── -->
+    <div class="col-md-8">
+
+        <!-- Assessment Summary Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-file-text"></i> Assessment Details
+                <span class="pull-right no-print">
+                    <a href="@Url.Action("Index","Assessment")"
+                       class="btn btn-xs btn-default">
+                        <i class="fa fa-arrow-left"></i> Back
+                    </a>
+                    <button id="btnPrint" class="btn btn-xs btn-info">
+                        <i class="fa fa-print"></i> Print
+                    </button>
+                </span>
+            </div>
+
+            @if (assessment != null)
+            {
+                <div class="card-body">
+
+                    <!-- Student Info Row -->
+                    <div class="row" style="margin-bottom:15px">
+                        <div class="col-md-6">
+                            <table class="table table-condensed"
+                                   style="border:none">
+                                <tr>
+                                    <td style="width:140px;color:#888;
+                                               font-size:12px">
+                                        Student No:
+                                    </td>
+                                    <td>
+                                        <strong>@assessment["StudentNumber"]</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#888;font-size:12px">
+                                        Student Name:
+                                    </td>
+                                    <td>
+                                        <strong>@assessment["StudentName"]</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#888;font-size:12px">
+                                        Course:
+                                    </td>
+                                    <td>@assessment["CourseName"]</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-condensed"
+                                   style="border:none">
+                                <tr>
+                                    <td style="width:140px;color:#888;
+                                               font-size:12px">
+                                        School Year:
+                                    </td>
+                                    <td>
+                                        <strong>@assessment["SchoolYear"]</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#888;font-size:12px">
+                                        Semester:
+                                    </td>
+                                    <td>@assessment["Semester"]</td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#888;font-size:12px">
+                                        Units Enrolled:
+                                    </td>
+                                    <td>@assessment["UnitsEnrolled"] units</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <!-- Fee Breakdown -->
+                    <h5 style="color:#2c3e50;font-weight:bold">
+                        <i class="fa fa-list"></i> Fee Breakdown
+                    </h5>
+
+                    <table class="table table-condensed table-bordered"
+                           style="font-size:13px">
+                        <tr>
+                            <td style="color:#888">Tuition Fee</td>
+                            <td class="text-right">
+                                ₱@string.Format("{0:N2}", assessment["TuitionFee"])
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="color:#888">Registration Fee</td>
+                            <td class="text-right">
+                                ₱@string.Format("{0:N2}", assessment["RegistrationFee"])
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="color:#888">Miscellaneous Fee</td>
+                            <td class="text-right">
+                                ₱@string.Format("{0:N2}", assessment["MiscellaneousFee"])
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="color:#888">Laboratory Fee</td>
+                            <td class="text-right">
+                                ₱@string.Format("{0:N2}", assessment["LaboratoryFee"])
+                            </td>
+                        </tr>
+                        <tr style="font-weight:bold">
+                            <td>Total Assessment</td>
+                            <td class="text-right">
+                                ₱@string.Format("{0:N2}", assessment["TotalAssessment"])
+                            </td>
+                        </tr>
+                        <tr style="color:#e74c3c">
+                            <td>Scholarship Deduction</td>
+                            <td class="text-right">
+                                - ₱@string.Format("{0:N2}",
+                               assessment["ScholarshipDeduction"])
+                            </td>
+                        </tr>
+                        <tr style="color:#e74c3c">
+                            <td>Discount Deduction</td>
+                            <td class="text-right">
+                                - ₱@string.Format("{0:N2}",
+                               assessment["DiscountDeduction"])
+                            </td>
+                        </tr>
+                        <tr style="font-weight:bold;font-size:15px;
+                                   background:#f0f7ff">
+                            <td>Net Assessment</td>
+                            <td class="text-right" style="color:#2c3e50">
+                                ₱@string.Format("{0:N2}", assessment["NetAssessment"])
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            }
+        </div>
+
+        <!-- Payment History Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-history"></i> Payment History
+                @if (Session["Role"].ToString() == "Admin")
+                {
+                    <a href="@Url.Action("Create","Payment",
+                             new { assessmentID = assessment["AssessmentID"] })"
+                       class="btn btn-xs btn-success pull-right no-print">
+                        <i class="fa fa-plus"></i> Record Payment
+                    </a>
+                }
+            </div>
+            <div class="card-body" style="padding:0">
+                <table class="table table-striped table-condensed"
+                       style="font-size:13px">
+                    <thead>
+                        <tr>
+                            <th>OR Number</th>
+                            <th>Term</th>
+                            <th>Amount Paid</th>
+                            <th>Date</th>
+                            <th>Method</th>
+                            <th>Received By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (payments != null && payments.Rows.Count > 0)
+                        {
+                            foreach (System.Data.DataRow row in payments.Rows)
+                            {
+                                <tr>
+                                    <td>@row["ORNumber"]</td>
+                                    <td>@row["TermName"]</td>
+                                    <td style="color:#27ae60;font-weight:bold">
+                                        ₱@string.Format("{0:N2}", row["AmountPaid"])
+                                    </td>
+                                    <td>
+                                        @Convert.ToDateTime(row["PaymentDate"])
+                                        .ToString("MMM dd, yyyy")
+                                    </td>
+                                    <td>@row["PaymentMethod"]</td>
+                                    <td>@row["ReceivedByName"]</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">
+                                    <i class="fa fa-info-circle"></i>
+                                    No payments recorded yet.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ── RIGHT COLUMN: Payment Terms & Balance ── -->
+    <div class="col-md-4">
+
+        <!-- Balance Summary Card -->
+        <div class="card">
+            <div class="card-header"
+                 style="background:#2c3e50;color:#fff">
+                <i class="fa fa-balance-scale"></i> Balance Summary
+            </div>
+            <div class="card-body text-center">
+
+                @if (assessment != null)
+                {
+                    decimal net = Convert.ToDecimal(assessment["NetAssessment"]);
+                    decimal paid = Convert.ToDecimal(ViewBag.TotalPaid);
+                    decimal balance = Convert.ToDecimal(ViewBag.RemainingBalance);
+                    int paidPct = net > 0
+                                    ? (int)((paid / net) * 100) : 0;
+
+                    <!-- Progress Bar -->
+                    <div style="margin-bottom:15px">
+                        <div style="font-size:12px;color:#888;margin-bottom:5px">
+                            Payment Progress
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-success"
+                                 style="width:@paidPct%">
+                                @paidPct%
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="table table-condensed">
+                        <tr>
+                            <td style="color:#888;font-size:12px">
+                                Total Assessment:
+                            </td>
+                            <td class="text-right font-weight:bold">
+                                ₱@string.Format("{0:N2}", net)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="color:#27ae60;font-size:12px">
+                                Total Paid:
+                            </td>
+                            <td class="text-right"
+                                style="color:#27ae60;font-weight:bold">
+                                ₱@string.Format("{0:N2}", paid)
+                            </td>
+                        </tr>
+                        <tr style="font-size:15px;font-weight:bold">
+                            <td style="color:@(balance > 0 ? "#e74c3c" : "#27ae60")">
+                                Balance:
+                            </td>
+                            <td class="text-right"
+                                style="color:@(balance > 0 ? "#e74c3c" : "#27ae60")">
+                                ₱@string.Format("{0:N2}", balance)
+                            </td>
+                        </tr>
+                    </table>
+                }
+
+            </div>
+        </div>
+
+        <!-- Payment Terms Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-calendar"></i> Payment Terms
+            </div>
+            <div class="card-body" style="padding:0">
+                <table class="table table-condensed" style="font-size:13px">
+                    <thead>
+                        <tr>
+                            <th>Term</th>
+                            <th>Amount Due</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (terms != null)
+                        {
+                            foreach (System.Data.DataRow row in terms.Rows)
+                            {
+                                bool isPaid = Convert.ToBoolean(row["IsPaid"]);
+                                <tr>
+                                    <td>@row["TermName"]</td>
+                                    <td>
+                                        ₱@string.Format("{0:N2}", row["AmountDue"])
+                                    </td>
+                                    <td>
+                                        @if (isPaid)
+                                        {
+                                            <span class="status-badge badge-active">
+                                                <i class="fa fa-check"></i> Paid
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-badge badge-inactive">
+                                                Unpaid
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScript/payment.js"></script>
+}

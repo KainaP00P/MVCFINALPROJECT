@@ -1,0 +1,218 @@
+﻿@{
+    ViewBag.Title = "Edit Discount";
+    ViewBag.ActiveMenu = "Discount";
+
+    // Get discount data passed from controller
+    var discount = ViewBag.Discount as System.Data.DataRow;
+}
+
+<div class="card">
+
+    <div class="card-header">
+        <i class="fa fa-edit"></i> Edit Discount
+        @if (discount != null)
+        {
+            <small class="text-muted" style="margin-left:10px">
+                @discount["DiscountName"]
+            </small>
+        }
+    </div>
+
+    <div class="card-body">
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fa fa-exclamation-circle"></i> @ViewBag.Error
+            </div>
+        }
+
+        @if (discount != null)
+        {
+            // Determine current discount type for pre-selecting dropdown
+            decimal currentAmount = Convert.ToDecimal(discount["DiscountAmount"]);
+            decimal currentPercent = Convert.ToDecimal(discount["DiscountPercent"]);
+            string currentType = currentPercent > 0 ? "percent" : "amount";
+
+            using (Html.BeginForm("Edit", "Discount",
+                new RouteValueDictionary { { "id", discount["DiscountID"] } },
+                FormMethod.Post,
+                new { id = "discountForm" }))
+            {
+                <div class="row">
+
+                    <!-- Discount Name -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                Discount Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                   id="DiscountName"
+                                   name="DiscountName"
+                                   class="form-control"
+                                   value="@discount["DiscountName"]" />
+                            <span class="field-error" id="discountNameError"></span>
+                        </div>
+                    </div>
+
+                    <!-- Discount Type selector -->
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Discount Type</label>
+                            <select id="discountType" class="form-control">
+                                <option value="">-- Select Type --</option>
+                                <option value="amount"
+                                        @(currentType == "amount" ? "selected" : "")>
+                                    Fixed Amount (₱)
+                                </option>
+                                <option value="percent"
+                                        @(currentType == "percent" ? "selected" : "")>
+                                    Percentage (%)
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div style="margin-top:8px">
+                                <input type="hidden" name="IsActive" value="false" />
+                                <input type="checkbox"
+                                       id="IsActive"
+                                       name="IsActive"
+                                       value="true"
+                                       @(Convert.ToBoolean(discount["IsActive"]) ? "checked=checked" : "") />
+                                <label for="IsActive" style="font-weight:normal">
+                                    Active
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <!-- Fixed Amount -->
+                    <div class="col-md-3" id="amountGroup">
+                        <div class="form-group">
+                            <label>Fixed Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">₱</span>
+                                <input type="number"
+                                       id="DiscountAmount"
+                                       name="DiscountAmount"
+                                       class="form-control"
+                                       value="@currentAmount"
+                                       min="0"
+                                       step="0.01" />
+                            </div>
+                            <span class="field-error" id="discountAmountError"></span>
+                        </div>
+                    </div>
+
+                    <!-- Percent -->
+                    <div class="col-md-3" id="percentGroup">
+                        <div class="form-group">
+                            <label>Discount Percent</label>
+                            <div class="input-group">
+                                <input type="number"
+                                       id="DiscountPercent"
+                                       name="DiscountPercent"
+                                       class="form-control"
+                                       value="@currentPercent"
+                                       min="0"
+                                       max="100"
+                                       step="0.01" />
+                                <span class="input-group-addon">%</span>
+                            </div>
+                            <span class="field-error" id="discountPercentError"></span>
+                        </div>
+                    </div>
+
+                    <!-- Live preview -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Preview</label>
+                            <p id="discountPreview"
+                               class="form-control-static"
+                               style="font-weight:bold;color:green">
+                            </p>
+                            <span class="field-error" id="discountValueError"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>
+                                Description
+                                <small class="text-muted">(optional)</small>
+                            </label>
+                            <textarea id="Description"
+                                      name="Description"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="Enter scholarship description or eligibility requirements...">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Read only info -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Date Created</label>
+                            <p class="form-control-static text-muted">
+                                @Convert.ToDateTime(discount["CreatedAt"])
+                                .ToString("MMM dd, yyyy hh:mm tt")
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info box -->
+                <div class="alert alert-info" style="font-size:12px">
+                    <i class="fa fa-info-circle"></i>
+                    <strong>Note:</strong>
+                    Use <strong>Fixed Amount</strong> for a specific peso deduction.
+                    Use <strong>Percentage</strong> for a percent-based deduction
+                    from total fee. Only one type applies per discount.
+                </div>
+
+                <!-- Buttons -->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Save Changes
+                    </button>
+                    <a href="@Url.Action("Index", "Discount")"
+                       class="btn btn-default">
+                        <i class="fa fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                <i class="fa fa-warning"></i> Discount not found.
+            </div>
+            <a href="@Url.Action("Index", "Discount")"
+               class="btn btn-default">
+                <i class="fa fa-arrow-left"></i> Back to List
+            </a>
+        }
+
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScript/discount.js"></script>
+}

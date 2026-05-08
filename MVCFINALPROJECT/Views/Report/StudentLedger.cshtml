@@ -1,0 +1,279 @@
+﻿@{
+    ViewBag.Title = "Student Ledger Report";
+    ViewBag.ActiveMenu = "Report";
+
+    var ledger = ViewBag.LedgerData as System.Data.DataTable;
+}
+
+<div class="card">
+
+    <!-- Card Header -->
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-5">
+                <i class="fa fa-bar-chart"></i> Student Ledger Report
+            </div>
+            <div class="col-md-7 text-right no-print">
+                <!-- Print button -->
+                <button id="btnPrint" class="btn btn-sm btn-info">
+                    <i class="fa fa-print"></i> Print
+                </button>
+                <!-- Export CSV button -->
+                <button id="btnExportCSV" class="btn btn-sm btn-success">
+                    <i class="fa fa-download"></i> Export CSV
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── FILTER SECTION ── -->
+    <div class="card-body filter-section no-print"
+         style="background:#f8f9fa;border-bottom:1px solid #eee">
+
+        @using (Html.BeginForm("StudentLedger", "Report", FormMethod.Get))
+        {
+            <div class="row">
+
+                <!-- Student Number filter -->
+                <div class="col-md-3">
+                    <div class="form-group" style="margin:0">
+                        <label style="font-size:12px">Student Number</label>
+                        <input type="text"
+                               name="studentNumber"
+                               class="form-control input-sm"
+                               placeholder="Search by student no."
+                               value="@ViewBag.StudentNumber" />
+                    </div>
+                </div>
+
+                <!-- School Year filter -->
+                <div class="col-md-3">
+                    <div class="form-group" style="margin:0">
+                        <label style="font-size:12px">School Year</label>
+                        <input type="text"
+                               name="schoolYear"
+                               class="form-control input-sm"
+                               placeholder="e.g. 2024-2025"
+                               value="@ViewBag.SchoolYear" />
+                    </div>
+                </div>
+
+                <!-- Balance status filter -->
+                <div class="col-md-3">
+                    <div class="form-group" style="margin:0">
+                        <label style="font-size:12px">Balance Status</label>
+                        <select id="filterBalance" class="form-control input-sm">
+                            <option value="">All Students</option>
+                            <option value="unpaid">With Balance</option>
+                            <option value="paid">Fully Paid</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Search and Clear buttons -->
+                <div class="col-md-3">
+                    <div class="form-group" style="margin:0">
+                        <label style="font-size:12px">&nbsp;</label>
+                        <div>
+                            <button type="submit"
+                                    class="btn btn-sm btn-primary">
+                                <i class="fa fa-search"></i> Search
+                            </button>
+                            <a href="@Url.Action("StudentLedger","Report")"
+                               class="btn btn-sm btn-default">
+                                <i class="fa fa-refresh"></i> Clear
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Live search row -->
+            <div class="row" style="margin-top:10px">
+                <div class="col-md-4">
+                    <input type="text"
+                           id="searchLedger"
+                           class="form-control input-sm"
+                           placeholder="Live search in table..." />
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <!-- ── PRINT HEADER (visible only when printing) ── -->
+    <div style="display:none" class="print-only">
+        <div class="text-center" style="margin-bottom:15px">
+            <h4 style="margin:0">Student Accounting System</h4>
+            <h5 style="margin:5px 0">Student Ledger Report</h5>
+            @if (!string.IsNullOrEmpty(ViewBag.SchoolYear as string))
+            {
+                <p style="margin:0;font-size:12px">
+                    School Year: @ViewBag.SchoolYear
+                </p>
+            }
+            <p style="margin:0;font-size:12px;color:#888">
+                Printed: @DateTime.Now.ToString("MMMM dd, yyyy hh:mm tt")
+            </p>
+        </div>
+        <hr />
+    </div>
+
+    <!-- ── LEDGER TABLE ── -->
+    <div class="card-body" style="padding:0">
+        <table class="table table-striped table-bordered table-condensed"
+               id="ledgerTable"
+               style="font-size:13px">
+            <thead>
+                <tr>
+                    <th>Student No.</th>
+                    <th>Full Name</th>
+                    <th>Course</th>
+                    <th>School Year</th>
+                    <th>Semester</th>
+                    <th class="text-right">Total Assessment</th>
+                    <th class="text-right">Scholarship</th>
+                    <th class="text-right">Discount</th>
+                    <th class="text-right col-net">Net Assessment</th>
+                    <th class="text-right col-paid">Total Paid</th>
+                    <th class="text-right col-balance">Balance</th>
+                    <th class="no-print">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ledger != null && ledger.Rows.Count > 0)
+                {
+                    foreach (System.Data.DataRow row in ledger.Rows)
+                    {
+                        decimal balance = Convert.ToDecimal(row["RemainingBalance"]);
+
+                        <tr>
+                            <td>@row["StudentNumber"]</td>
+                            <td>
+                                <strong>@row["FullName"]</strong>
+                            </td>
+                            <td>@row["CourseName"]</td>
+                            <td>@row["SchoolYear"]</td>
+                            <td>@row["Semester"]</td>
+                            <td class="text-right">
+                                ₱@string.Format("{0:N2}",
+                                 row["TotalAssessment"])
+                            </td>
+                            <td class="text-right" style="color:#e74c3c">
+                                - ₱@string.Format("{0:N2}",
+                                row["ScholarshipDeduction"])
+                            </td>
+                            <td class="text-right" style="color:#e74c3c">
+                                - ₱@string.Format("{0:N2}",
+                                row["DiscountDeduction"])
+                            </td>
+                            <td class="text-right col-net"
+                                style="font-weight:bold">
+                                ₱@string.Format("{0:N2}", row["NetAssessment"])
+                            </td>
+                            <td class="text-right col-paid"
+                                style="color:#27ae60;font-weight:bold">
+                                ₱@string.Format("{0:N2}", row["TotalPaid"])
+                            </td>
+                            <td class="text-right col-balance"
+                                style="color:@(balance > 0 ? "#e74c3c" : "#27ae60");
+                                       font-weight:bold">
+                                ₱@string.Format("{0:N2}", balance)
+                            </td>
+                            <td class="no-print">
+                                <!-- View detailed ledger for this student -->
+                                @{
+                                    // Get studentID for the detail link
+                                    var studentDT = MVCFINALPROJECT.Models
+                                                    .StudentModel.GetAllStudents();
+                                    var matchRow = studentDT.Select(
+                                        "StudentNumber = '" +
+                                        row["StudentNumber"] + "'");
+                                    if (matchRow.Length > 0)
+                                    {
+                                        <a href="@Url.Action(
+                                                 "StudentLedgerDetail",
+                                                 "Report",
+                                                 new { studentID =
+                                                 matchRow[0]["StudentID"] })"
+                                           class="btn btn-xs btn-info">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="12" class="text-center text-muted">
+                            <i class="fa fa-info-circle"></i>
+                            No ledger records found.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+            <!-- ── GRAND TOTAL FOOTER ROW ── -->
+            @if (ledger != null && ledger.Rows.Count > 0)
+            {
+                <tfoot>
+                    <tr style="background:#2c3e50;color:#fff;font-weight:bold">
+                        <td colspan="5" class="text-right">
+                            GRAND TOTAL:
+                        </td>
+                        <td class="text-right">
+                            ₱@string.Format("{0:N2}",
+                             ViewBag.GrandTotalAssessment)
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right" id="footerNet">
+                            ₱@string.Format("{0:N2}",
+                             ViewBag.GrandTotalAssessment)
+                        </td>
+                        <td class="text-right" id="footerPaid"
+                            style="color:#2ecc71">
+                            ₱@string.Format("{0:N2}", ViewBag.GrandTotalPaid)
+                        </td>
+                        <td class="text-right" id="footerBalance"
+                            style="color:#e74c3c">
+                            ₱@string.Format("{0:N2}",
+                             ViewBag.GrandTotalBalance)
+                        </td>
+                        <td class="no-print"></td>
+                    </tr>
+                </tfoot>
+            }
+
+        </table>
+    </div>
+
+    <!-- Card Footer -->
+    <div class="card-body no-print"
+         style="padding:10px;border-top:1px solid #eee;
+                font-size:12px;color:#888">
+        @if (ledger != null)
+        {
+            <i class="fa fa-info-circle"></i>
+            @: Total records: @ledger.Rows.Count student(s)
+        }
+    </div>
+
+</div>
+
+<style>
+    /* Show print header only when printing */
+    @@media print {
+        .print-only {
+            display: block !important;
+        }
+    }
+</style>
+
+@section scripts {
+    <script src="~/Scripts/myScript/report.js"></script>
+}

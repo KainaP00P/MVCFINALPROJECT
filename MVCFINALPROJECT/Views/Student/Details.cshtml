@@ -1,0 +1,286 @@
+﻿@{
+    ViewBag.Title = "Student Details";
+    ViewBag.ActiveMenu = "Student";
+
+    var student = ViewBag.Student as System.Data.DataRow;
+}
+
+<div class="card">
+
+    <!-- Card Header -->
+    <div class="card-header">
+        <i class="fa fa-user"></i> Student Profile
+        @if (student != null)
+        {
+            <small class="text-muted" style="margin-left:10px">
+                @student["StudentNumber"]
+            </small>
+        }
+        <div class="pull-right no-print">
+            <a href="@Url.Action("Edit", "Student",
+                     new { id = student["StudentID"] })"
+               class="btn btn-xs btn-warning">
+                <i class="fa fa-edit"></i> Edit
+            </a>
+            <a href="@Url.Action("Create", "Assessment")"
+               class="btn btn-xs btn-success">
+                <i class="fa fa-file-text"></i> Assess Fees
+            </a>
+            <a href="@Url.Action("Index", "Student")"
+               class="btn btn-xs btn-default">
+                <i class="fa fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="card-body">
+
+        @if (student != null)
+        {
+            <!-- ── PERSONAL INFORMATION ── -->
+            <div class="card" style="border:1px solid #ddd;margin-bottom:20px">
+                <div class="card-header"
+                     style="background:#27ae60;color:#fff;font-size:13px">
+                    <i class="fa fa-user"></i> Personal Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <label style="color:#888;font-size:11px">
+                                STUDENT NUMBER
+                            </label>
+                            <p><strong>@student["StudentNumber"]</strong></p>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label style="color:#888;font-size:11px">FULL NAME</label>
+                            <p>
+                                <strong>
+                                    @student["LastName"], @student["FirstName"]
+                                    @student["MiddleName"]
+                                </strong>
+                            </p>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label style="color:#888;font-size:11px">GENDER</label>
+                            <p>@student["Gender"]</p>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label style="color:#888;font-size:11px">BIRTH DATE</label>
+                            <p>
+                                @Convert.ToDateTime(student["BirthDate"])
+                                .ToString("MMM dd, yyyy")
+                            </p>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label style="color:#888;font-size:11px">STATUS</label>
+                            <p>
+                                <span class="status-badge badge-enrolled">
+                                    @student["EnrollmentStatus"]
+                                </span>
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <label style="color:#888;font-size:11px">ADDRESS</label>
+                            <p>@student["Address"]</p>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label style="color:#888;font-size:11px">EMAIL</label>
+                            <p>@student["Email"]</p>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label style="color:#888;font-size:11px">
+                                CONTACT NUMBER
+                            </label>
+                            <p>@student["ContactNumber"]</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── ACADEMIC INFORMATION ── -->
+            <div class="card" style="border:1px solid #ddd;margin-bottom:20px">
+                <div class="card-header"
+                     style="background:#e67e22;color:#fff;font-size:13px">
+                    <i class="fa fa-book"></i> Academic Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <label style="color:#888;font-size:11px">COURSE</label>
+                            <p><strong>@student["CourseName"]</strong></p>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label style="color:#888;font-size:11px">YEAR LEVEL</label>
+                            <p>Year @student["YearLevel"]</p>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label style="color:#888;font-size:11px">SEMESTER</label>
+                            <p>@student["Semester"] Sem</p>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label style="color:#888;font-size:11px">SCHOOL YEAR</label>
+                            <p>@student["SchoolYear"]</p>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label style="color:#888;font-size:11px">REGISTERED ON</label>
+                            <p>
+                                @Convert.ToDateTime(student["CreatedAt"])
+                                .ToString("MMM dd, yyyy")
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── ASSESSMENT HISTORY ── -->
+            <div class="card" style="border:1px solid #ddd;margin-bottom:20px">
+                <div class="card-header"
+                     style="background:#3498db;color:#fff;font-size:13px">
+                    <i class="fa fa-file-text"></i> Assessment History
+                </div>
+                <div class="card-body" style="padding:0">
+                    <table class="table table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>School Year</th>
+                                <th>Semester</th>
+                                <th>Units</th>
+                                <th>Total Assessment</th>
+                                <th>Deductions</th>
+                                <th>Net Assessment</th>
+                                <th class="no-print">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.Assessments != null)
+                            {
+                                var assessments = ViewBag.Assessments
+                                                  as System.Data.DataTable;
+                                if (assessments.Rows.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted">
+                                            No assessments found.
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (System.Data.DataRow row in assessments.Rows)
+                                    {
+                                        decimal deductions =
+                                            Convert.ToDecimal(row["ScholarshipDeduction"])
+                                          + Convert.ToDecimal(row["DiscountDeduction"]);
+                                        <tr>
+                                            <td>@row["SchoolYear"]</td>
+                                            <td>@row["Semester"]</td>
+                                            <td>@row["UnitsEnrolled"]</td>
+                                            <td>
+                                                ₱@string.Format("{0:N2}",
+                                                 row["TotalAssessment"])
+                                            </td>
+                                            <td style="color:#e74c3c">
+                                                - ₱@string.Format("{0:N2}", deductions)
+                                            </td>
+                                            <td style="font-weight:bold;color:#2c3e50">
+                                                ₱@string.Format("{0:N2}",
+                                                 row["NetAssessment"])
+                                            </td>
+                                            <td class="no-print">
+                                                <a href="@Url.Action("Details",
+                                                         "Assessment",
+                                                         new { id = row["AssessmentID"] })"
+                                                   class="btn btn-xs btn-info">
+                                                    <i class="fa fa-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── PAYMENT HISTORY ── -->
+            <div class="card" style="border:1px solid #ddd">
+                <div class="card-header"
+                     style="background:#9b59b6;color:#fff;font-size:13px">
+                    <i class="fa fa-credit-card"></i> Payment History
+                </div>
+                <div class="card-body" style="padding:0">
+                    <table class="table table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>OR Number</th>
+                                <th>Term</th>
+                                <th>Amount Paid</th>
+                                <th>Payment Date</th>
+                                <th>Method</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.Payments != null)
+                            {
+                                var payments = ViewBag.Payments
+                                               as System.Data.DataTable;
+                                if (payments.Rows.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">
+                                            No payments recorded yet.
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (System.Data.DataRow row in payments.Rows)
+                                    {
+                                        <tr>
+                                            <td>@row["ORNumber"]</td>
+                                            <td>@row["TermName"]</td>
+                                            <td style="color:#27ae60;font-weight:bold">
+                                                ₱@string.Format("{0:N2}",
+                                                 row["AmountPaid"])
+                                            </td>
+                                            <td>
+                                                @Convert.ToDateTime(row["PaymentDate"])
+                                                .ToString("MMM dd, yyyy")
+                                            </td>
+                                            <td>@row["PaymentMethod"]</td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScript/student.js"></script>
+}

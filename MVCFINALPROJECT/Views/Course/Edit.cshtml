@@ -1,0 +1,145 @@
+﻿@{
+    ViewBag.Title = "Edit Course";
+    ViewBag.ActiveMenu = "Course";
+
+    // Get course data passed from controller
+    var course = ViewBag.Course as System.Data.DataRow;
+}
+
+<div class="card">
+
+    <div class="card-header">
+        <i class="fa fa-edit"></i> Edit Course
+        @if (course != null)
+        {
+            <small class="text-muted" style="margin-left:10px">
+                @course["CourseCode"] - @course["CourseName"]
+            </small>
+        }
+    </div>
+
+    <div class="card-body">
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fa fa-exclamation-circle"></i> @ViewBag.Error
+            </div>
+        }
+
+        @if (course != null)
+        {
+            using (Html.BeginForm("Edit", "Course",
+                   new RouteValueDictionary { { "id", course["CourseID"] } },
+                   FormMethod.Post,
+                   new { id = "courseForm" }))
+            {
+                <div class="row">
+
+                    <!-- Course Code -->
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Course Code <span class="text-danger">*</span></label>
+                            <input type="text"
+                                   id="CourseCode"
+                                   name="CourseCode"
+                                   class="form-control"
+                                   value="@course["CourseCode"]"
+                                   maxlength="20" />
+                            <small id="courseCodeCounter" style="color:gray">
+                                20 characters remaining
+                            </small>
+                            <span class="field-error" id="courseCodeError"></span>
+                        </div>
+                    </div>
+
+                    <!-- Course Name -->
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Course Name <span class="text-danger">*</span></label>
+                            <input type="text"
+                                   id="CourseName"
+                                   name="CourseName"
+                                   class="form-control"
+                                   value="@course["CourseName"]" />
+                            <span class="field-error" id="courseNameError"></span>
+                        </div>
+                    </div>
+
+                    <!-- Department -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Department <small class="text-muted">(optional)</small></label>
+                            <input type="text"
+                                   id="Department"
+                                   name="Department"
+                                   class="form-control"
+                                   value="@course["Department"]" />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <!-- Is Active -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div>
+                                <!-- Hidden field ensures false is sent when unchecked -->
+                                <input type="hidden" name="IsActive" value="false" />
+                                <input type="checkbox"
+                                       id="IsActive"
+                                       name="IsActive"
+                                       value="true"
+                                       @(Convert.ToBoolean(course["IsActive"]) ? "checked=checked" : "") />
+                                <label for="IsActive" style="font-weight:normal">
+                                    Active (can be used in enrollment)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Created Date (read only info) -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Date Created</label>
+                            <p class="form-control-static text-muted">
+                                @Convert.ToDateTime(course["CreatedAt"])
+                                .ToString("MMM dd, yyyy hh:mm tt")
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="form-group" style="margin-top:10px">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Save Changes
+                    </button>
+                    <a href="@Url.Action("Index", "Course")"
+                       class="btn btn-default">
+                        <i class="fa fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                <i class="fa fa-warning"></i> Course not found.
+            </div>
+            <a href="@Url.Action("Index", "Course")"
+               class="btn btn-default">
+                <i class="fa fa-arrow-left"></i> Back to List
+            </a>
+        }
+
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScript/course.js"></script>
+}

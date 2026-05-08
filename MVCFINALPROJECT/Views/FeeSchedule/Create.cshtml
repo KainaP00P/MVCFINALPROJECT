@@ -1,0 +1,292 @@
+﻿@{
+    ViewBag.Title = "Add Fee Schedule";
+    ViewBag.ActiveMenu = "FeeSchedule";
+}
+
+<div class="card">
+
+    <div class="card-header">
+        <i class="fa fa-plus"></i> Add New Fee Schedule
+    </div>
+
+    <div class="card-body">
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fa fa-exclamation-circle"></i> @ViewBag.Error
+            </div>
+        }
+
+        @using (Html.BeginForm("Create", "FeeSchedule",
+                FormMethod.Post, new { id = "feeScheduleForm" }))
+        {
+            <!-- ── SECTION 1: Schedule Info ── -->
+            <div class="card" style="border:1px solid #ddd;margin-bottom:20px">
+                <div class="card-header"
+                     style="background:#3498db;color:#fff;font-size:13px">
+                    <i class="fa fa-info-circle"></i> Schedule Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+
+                        <!-- Course -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>
+                                    Course <span class="text-danger">*</span>
+                                </label>
+                                <select id="CourseID"
+                                        name="CourseID"
+                                        class="form-control">
+                                    <option value="">-- Select Course --</option>
+                                    @if (ViewBag.Courses != null)
+                                    {
+                                        var courses = ViewBag.Courses
+                                                      as System.Data.DataTable;
+                                        foreach (System.Data.DataRow row
+                                                 in courses.Rows)
+                                        {
+                                            <option value="@row["CourseID"]">
+                                                @row["CourseCode"] -
+                                                @row["CourseName"]
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                                <span class="field-error" id="courseError"></span>
+                            </div>
+                        </div>
+
+                        <!-- School Year -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>
+                                    School Year <span class="text-danger">*</span>
+                                </label>
+                                <input type="text"
+                                       id="SchoolYear"
+                                       name="SchoolYear"
+                                       class="form-control"
+                                       placeholder="e.g. 2024-2025"
+                                       value="@ViewBag.DefaultSchoolYear"
+                                       maxlength="9" />
+                                <span class="field-error" id="schoolYearError"></span>
+                            </div>
+                        </div>
+
+                        <!-- Semester -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>
+                                    Semester <span class="text-danger">*</span>
+                                </label>
+                                <select id="Semester"
+                                        name="Semester"
+                                        class="form-control">
+                                    <option value="">-- Select --</option>
+                                    <option value="1st">1st Semester</option>
+                                    <option value="2nd">2nd Semester</option>
+                                    <option value="Summer">Summer</option>
+                                </select>
+                                <span class="field-error" id="semesterError"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── SECTION 2: Fee Amounts ── -->
+            <div class="card" style="border:1px solid #ddd;margin-bottom:20px">
+                <div class="card-header"
+                     style="background:#27ae60;color:#fff;font-size:13px">
+                    <i class="fa fa-money"></i> Fee Amounts
+                </div>
+                <div class="card-body">
+                    <div class="row">
+
+                        <!-- Tuition Fee Per Unit -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>
+                                    Tuition Fee / Unit
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">₱</span>
+                                    <input type="number"
+                                           id="TuitionFeePerUnit"
+                                           name="TuitionFeePerUnit"
+                                           class="form-control"
+                                           placeholder="0.00"
+                                           min="0"
+                                           step="0.01" />
+                                </div>
+                                <span class="field-error" id="tuitionError"></span>
+                            </div>
+                        </div>
+
+                        <!-- Registration Fee -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Registration Fee</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">₱</span>
+                                    <input type="number"
+                                           id="RegistrationFee"
+                                           name="RegistrationFee"
+                                           class="form-control"
+                                           placeholder="0.00"
+                                           value="0"
+                                           min="0"
+                                           step="0.01" />
+                                </div>
+                                <span class="field-error" id="regFeeError"></span>
+                            </div>
+                        </div>
+
+                        <!-- Miscellaneous Fee -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Miscellaneous Fee</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">₱</span>
+                                    <input type="number"
+                                           id="MiscellaneousFee"
+                                           name="MiscellaneousFee"
+                                           class="form-control"
+                                           placeholder="0.00"
+                                           value="0"
+                                           min="0"
+                                           step="0.01" />
+                                </div>
+                                <span class="field-error" id="miscFeeError"></span>
+                            </div>
+                        </div>
+
+                        <!-- Laboratory Fee -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Laboratory Fee</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">₱</span>
+                                    <input type="number"
+                                           id="LaboratoryFee"
+                                           name="LaboratoryFee"
+                                           class="form-control"
+                                           placeholder="0.00"
+                                           value="0"
+                                           min="0"
+                                           step="0.01" />
+                                </div>
+                                <span class="field-error" id="labFeeError"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── SECTION 3: Live Preview ── -->
+            <div class="card" style="border:1px solid #ddd;margin-bottom:20px">
+                <div class="card-header"
+                     style="background:#e67e22;color:#fff;font-size:13px">
+                    <i class="fa fa-calculator"></i> Fee Computation Preview
+                    <small style="margin-left:10px">
+                        Sample Units:
+                        <input type="number"
+                               id="sampleUnits"
+                               value="21"
+                               min="1"
+                               max="30"
+                               style="width:50px;padding:2px 5px;
+                                      border:1px solid #fff;border-radius:3px;
+                                      background:rgba(255,255,255,0.2);
+                                      color:#fff;text-align:center" />
+                        units
+                    </small>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+
+                        <div class="col-md-3">
+                            <div style="font-size:11px;color:#888">
+                                TUITION TOTAL
+                            </div>
+                            <div id="previewTuition"
+                                 style="font-size:20px;font-weight:bold;
+                                        color:#3498db">
+                                ₱0.00
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div style="font-size:11px;color:#888">
+                                GRAND TOTAL
+                            </div>
+                            <div id="previewTotal"
+                                 style="font-size:20px;font-weight:bold;
+                                        color:#27ae60">
+                                ₱0.00
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <!-- Payment term breakdown -->
+                            <table class="table table-condensed"
+                                   style="font-size:12px;margin:0">
+                                <thead>
+                                    <tr style="background:#f8f9fa">
+                                        <th>Term</th>
+                                        <th>%</th>
+                                        <th>Amount Due</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Prelim</td>
+                                        <td>53%</td>
+                                        <td id="previewPrelim">₱0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Midterm</td>
+                                        <td>64%</td>
+                                        <td id="previewMidterm">₱0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Semi-Final</td>
+                                        <td>75%</td>
+                                        <td id="previewSemiFinal">₱0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Final</td>
+                                        <td>100%</td>
+                                        <td id="previewFinal">₱0.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-save"></i> Save Fee Schedule
+                </button>
+                <a href="@Url.Action("Index", "FeeSchedule")"
+                   class="btn btn-default">
+                    <i class="fa fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        }
+
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScript/feeSchedule.js"></script>
+}

@@ -1,0 +1,198 @@
+﻿@{
+    ViewBag.Title = "Discount Management";
+    ViewBag.ActiveMenu = "Discount";
+}
+
+<div class="card">
+
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6">
+                <i class="fa fa-tag"></i> Discount Management
+            </div>
+            <div class="col-md-6 text-right">
+                <!-- Status filter -->
+                <select id="filterStatus"
+                        class="form-control input-sm no-print"
+                        style="width:120px;display:inline-block;margin-right:5px">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+                <!-- Search -->
+                <input type="text"
+                       id="searchDiscount"
+                       class="form-control input-sm no-print"
+                       placeholder="Search..."
+                       style="width:180px;display:inline-block;margin-right:5px" />
+                <!-- Add button -->
+                <a href="@Url.Action("Create", "Discount")"
+                   class="btn btn-sm btn-primary no-print">
+                    <i class="fa fa-plus"></i> Add Discount
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body" style="padding:0">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success" style="margin:15px">
+                <i class="fa fa-check-circle"></i> @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger" style="margin:15px">
+                <i class="fa fa-exclamation-circle"></i> @TempData["Error"]
+            </div>
+        }
+
+        <table class="table table-striped table-hover" id="discountTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Discount Name</th>
+                    <th>Description</th>
+                    <th>Fixed Amount</th>
+                    <th>Percent</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th class="no-print">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.Discounts != null)
+                {
+                    var discounts = ViewBag.Discounts as System.Data.DataTable;
+                    int counter = 1;
+
+                    if (discounts.Rows.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">
+                                No discounts found. Click Add Discount to begin.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (System.Data.DataRow row in discounts.Rows)
+                        {
+                            bool isActive = Convert.ToBoolean(row["IsActive"]);
+                            decimal amount = Convert.ToDecimal(row["DiscountAmount"]);
+                            decimal percent = Convert.ToDecimal(row["DiscountPercent"]);
+
+                            // Determine discount type
+                            string typeLabel = percent > 0 ? "Percent" : "Fixed";
+                            string typeColor = percent > 0 ? "#3498db" : "#e67e22";
+
+                            <tr>
+                                <td>@counter</td>
+                                <td><strong>@row["DiscountName"]</strong></td>
+                                <td>
+                                    <small class="text-muted">
+                                        @row["Description"]
+                                    </small>
+                                </td>
+                                <td>
+                                    @if (amount > 0)
+                                    {
+                                        <span style="color:#27ae60;font-weight:bold">
+                                            ₱@string.Format("{0:N2}", amount)
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (percent > 0)
+                                    {
+                                        <span style="color:#3498db;font-weight:bold">
+                                            @percent.ToString("0.##")%
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="status-badge"
+                                          style="background:@typeColor;color:#fff">
+                                        @typeLabel
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="status-badge @(isActive
+                                          ? "badge-active" : "badge-inactive")">
+                                        @(isActive ? "Active" : "Inactive")
+                                    </span>
+                                </td>
+                                <td class="no-print">
+                                    <!-- Edit -->
+                                    <a href="@Url.Action("Edit","Discount",
+                                             new { id = row["DiscountID"] })"
+                                       class="btn btn-xs btn-warning">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <!-- Toggle Status -->
+                                    @using (Html.BeginForm("ToggleStatus",
+                                            "Discount",
+                                            new { id = row["DiscountID"] },
+                                            FormMethod.Post))
+                                    {
+                                        <button type="submit"
+                                                class="btn btn-xs @(isActive
+                                                       ? "btn-default" : "btn-success")
+                                                       btn-toggle"
+                                                data-name="@row["DiscountName"]"
+                                                data-status="@(isActive ? "1" : "0")"
+                                                title="@(isActive
+                                                       ? "Deactivate" : "Activate")">
+                                            <i class="fa @(isActive
+                                               ? "fa-toggle-on" : "fa-toggle-off")">
+                                            </i>
+                                        </button>
+                                    }
+                                    <!-- Delete -->
+                                    @using (Html.BeginForm("Delete", "Discount",
+                                            new { id = row["DiscountID"] },
+                                            FormMethod.Post))
+                                    {
+                                        <button type="submit"
+                                                class="btn btn-xs btn-danger btn-delete"
+                                                data-name="@row["DiscountName"]">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                            counter++;
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="card-body"
+         style="padding:10px;border-top:1px solid #eee;
+                font-size:12px;color:#888">
+        @if (ViewBag.Discounts != null)
+        {
+            var discounts = ViewBag.Discounts as System.Data.DataTable;
+            <i class="fa fa-info-circle"></i>
+            @: Total: @discounts.Rows.Count discount(s)
+        }
+    </div>
+
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScript/discount.js"></script>
+}

@@ -1,0 +1,368 @@
+﻿@{
+    ViewBag.Title = "Student Ledger Detail";
+    ViewBag.ActiveMenu = "Report";
+
+    var student = ViewBag.Student as System.Data.DataRow;
+    var assessments = ViewBag.Assessments as System.Data.DataTable;
+    var payments = ViewBag.Payments as System.Data.DataTable;
+}
+
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+
+        <!-- ── PRINT HEADER ── -->
+        <div style="display:none" class="print-only">
+            <div class="text-center" style="margin-bottom:15px">
+                <h4 style="margin:0">Student Accounting System</h4>
+                <h5 style="margin:5px 0">Individual Student Ledger</h5>
+                <p style="margin:0;font-size:12px;color:#888">
+                    Printed: @DateTime.Now.ToString("MMMM dd, yyyy hh:mm tt")
+                </p>
+            </div>
+            <hr />
+        </div>
+
+        <!-- ── STUDENT INFO CARD ── -->
+        <div class="card">
+            <div class="card-header"
+                 style="background:#2c3e50;color:#fff">
+                <i class="fa fa-user"></i> Student Ledger
+                <span class="pull-right no-print">
+                    <button id="btnPrint"
+                            class="btn btn-xs btn-info">
+                        <i class="fa fa-print"></i> Print
+                    </button>
+                    <a href="@Url.Action("StudentLedger","Report")"
+                       class="btn btn-xs btn-default">
+                        <i class="fa fa-arrow-left"></i> Back
+                    </a>
+                </span>
+            </div>
+
+            @if (student != null)
+            {
+                <div class="card-body">
+                    <div class="row">
+
+                        <!-- Student Details -->
+                        <div class="col-md-4">
+                            <table style="font-size:13px;width:100%">
+                                <tr>
+                                    <td style="color:#888;width:130px;
+                                               padding:3px 0">
+                                        Student No:
+                                    </td>
+                                    <td>
+                                        <strong>@student["StudentNumber"]</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#888;padding:3px 0">
+                                        Full Name:
+                                    </td>
+                                    <td>
+                                        <strong>
+                                            @student["LastName"],
+                                            @student["FirstName"]
+                                            @student["MiddleName"]
+                                        </strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#888;padding:3px 0">
+                                        Course:
+                                    </td>
+                                    <td>@student["CourseName"]</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="col-md-4">
+                            <table style="font-size:13px;width:100%">
+                                <tr>
+                                    <td style="color:#888;width:130px;
+                                               padding:3px 0">
+                                        Year Level:
+                                    </td>
+                                    <td>Year @student["YearLevel"]</td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#888;padding:3px 0">
+                                        Semester:
+                                    </td>
+                                    <td>@student["Semester"]</td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#888;padding:3px 0">
+                                        School Year:
+                                    </td>
+                                    <td>@student["SchoolYear"]</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Overall Balance Summary -->
+                        <div class="col-md-4">
+                            <div style="background:#f8f9fa;
+                                        padding:15px;
+                                        border-radius:5px;
+                                        text-align:center">
+                                <div style="font-size:12px;color:#888">
+                                    Overall Balance
+                                </div>
+                                <div style="font-size:28px;font-weight:bold;
+                                     color:@(Convert.ToDecimal(
+                                            ViewBag.OverallBalance) > 0
+                                            ? "#e74c3c" : "#27ae60")">
+                                    ₱@string.Format("{0:N2}",
+                                     ViewBag.OverallBalance)
+                                </div>
+                                <div style="font-size:12px;margin-top:5px">
+                                    <span style="color:#27ae60">
+                                        Paid: ₱@string.Format("{0:N2}",
+                                        ViewBag.TotalPaid)
+                                    </span>
+                                    &nbsp;/&nbsp;
+                                    <span style="color:#e67e22">
+                                        Total: ₱@string.Format("{0:N2}",
+                                        ViewBag.TotalAssessed)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- ── ASSESSMENT HISTORY CARD ── -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-file-text"></i> Assessment History
+            </div>
+            <div class="card-body" style="padding:0">
+                <table class="table table-striped table-condensed table-bordered"
+                       style="font-size:13px">
+                    <thead>
+                        <tr>
+                            <th>School Year</th>
+                            <th>Semester</th>
+                            <th>Units</th>
+                            <th class="text-right">Tuition</th>
+                            <th class="text-right">Other Fees</th>
+                            <th class="text-right">Total</th>
+                            <th class="text-right">Deductions</th>
+                            <th class="text-right">Net Amount</th>
+                            <th class="no-print">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (assessments != null && assessments.Rows.Count > 0)
+                        {
+                            foreach (System.Data.DataRow row in assessments.Rows)
+                            {
+                                // Compute other fees total
+                                decimal otherFees =
+                                    Convert.ToDecimal(row["RegistrationFee"]) +
+                                    Convert.ToDecimal(row["MiscellaneousFee"]) +
+                                    Convert.ToDecimal(row["LaboratoryFee"]);
+
+                                // Compute total deductions
+                                decimal deductions =
+                                    Convert.ToDecimal(row["ScholarshipDeduction"]) +
+                                    Convert.ToDecimal(row["DiscountDeduction"]);
+
+                                <tr>
+                                    <td>@row["SchoolYear"]</td>
+                                    <td>@row["Semester"]</td>
+                                    <td class="text-center">
+                                        @row["UnitsEnrolled"]
+                                    </td>
+                                    <td class="text-right">
+                                        ₱@string.Format("{0:N2}",
+                                         row["TuitionFee"])
+                                    </td>
+                                    <td class="text-right">
+                                        ₱@string.Format("{0:N2}", otherFees)
+                                    </td>
+                                    <td class="text-right" style="font-weight:bold">
+                                        ₱@string.Format("{0:N2}",
+                                         row["TotalAssessment"])
+                                    </td>
+                                    <td class="text-right" style="color:#e74c3c">
+                                        - ₱@string.Format("{0:N2}", deductions)
+                                    </td>
+                                    <td class="text-right"
+                                        style="font-weight:bold;color:#2c3e50">
+                                        ₱@string.Format("{0:N2}",
+                                         row["NetAssessment"])
+                                    </td>
+                                    <td class="no-print">
+                                        <a href="@Url.Action("Details",
+                                                 "Assessment",
+                                                 new { id = row["AssessmentID"] })"
+                                           class="btn btn-xs btn-info"
+                                           title="View Assessment">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center text-muted">
+                                    <i class="fa fa-info-circle"></i>
+                                    No assessment records found.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── PAYMENT HISTORY CARD ── -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-history"></i> Payment History
+            </div>
+            <div class="card-body" style="padding:0">
+                <table class="table table-striped table-condensed table-bordered"
+                       style="font-size:13px">
+                    <thead>
+                        <tr>
+                            <th>OR Number</th>
+                            <th>Term</th>
+                            <th class="text-right">Amount Due</th>
+                            <th class="text-right">Amount Paid</th>
+                            <th>Payment Date</th>
+                            <th>Method</th>
+                            <th>Received By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (payments != null && payments.Rows.Count > 0)
+                        {
+                            foreach (System.Data.DataRow row in payments.Rows)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@row["ORNumber"]</strong>
+                                    </td>
+                                    <td>
+                                        @{
+                                            string term = row["TermName"].ToString();
+                                            string tColor = term == "Prelim"
+                                                ? "#3498db" : term == "Midterm"
+                                                ? "#e67e22" : term == "Semi-Final"
+                                                ? "#9b59b6" : "#27ae60";
+                                        }
+                                        <span style="color:@tColor;
+                                                     font-weight:bold">
+                                            @term
+                                        </span>
+                                    </td>
+                                    <td class="text-right">
+                                        ₱@string.Format("{0:N2}", row["AmountDue"])
+                                    </td>
+                                    <td class="text-right"
+                                        style="color:#27ae60;font-weight:bold">
+                                        ₱@string.Format("{0:N2}", row["AmountPaid"])
+                                    </td>
+                                    <td>
+                                        @Convert.ToDateTime(row["PaymentDate"])
+                                        .ToString("MMM dd, yyyy")
+                                    </td>
+                                    <td>@row["PaymentMethod"]</td>
+                                    <td>@row["ReceivedByName"]</td>
+                                </tr>
+                            }
+
+                            <!-- Payment total row -->
+                            <tr style="background:#f0f7ff;font-weight:bold">
+                                <td colspan="3" class="text-right">
+                                    TOTAL PAID:
+                                </td>
+                                <td class="text-right" style="color:#27ae60">
+                                    ₱@string.Format("{0:N2}", ViewBag.TotalPaid)
+                                </td>
+                                <td colspan="3"></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">
+                                    <i class="fa fa-info-circle"></i>
+                                    No payment records found.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── FINAL BALANCE SUMMARY ── -->
+        <div class="card">
+            <div class="card-header"
+                 style="background:#2c3e50;color:#fff">
+                <i class="fa fa-calculator"></i> Final Balance Summary
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <table class="table table-condensed"
+                               style="font-size:14px">
+                            <tr>
+                                <td style="color:#888">Total Assessed:</td>
+                                <td class="text-right" style="font-weight:bold">
+                                    ₱@string.Format("{0:N2}",
+                                     ViewBag.TotalAssessed)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color:#27ae60">Total Paid:</td>
+                                <td class="text-right"
+                                    style="color:#27ae60;font-weight:bold">
+                                    ₱@string.Format("{0:N2}", ViewBag.TotalPaid)
+                                </td>
+                            </tr>
+                            <tr style="font-size:16px;font-weight:bold;
+                                       background:#f8f9fa">
+                                <td style="color:@(Convert.ToDecimal(
+                                           ViewBag.OverallBalance) > 0
+                                           ? "#e74c3c" : "#27ae60")">
+                                    Remaining Balance:
+                                </td>
+                                <td class="text-right"
+                                    style="color:@(Convert.ToDecimal(
+                                           ViewBag.OverallBalance) > 0
+                                           ? "#e74c3c" : "#27ae60")">
+                                    ₱@string.Format("{0:N2}",
+                                     ViewBag.OverallBalance)
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    @@media print {
+        .print-only {
+            display: block !important;
+        }
+    }
+</style>
+
+@section scripts {
+    <script src="~/Scripts/myScript/report.js"></script>
+}

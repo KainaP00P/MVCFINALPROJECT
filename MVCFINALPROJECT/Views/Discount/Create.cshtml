@@ -1,0 +1,172 @@
+﻿@{
+    ViewBag.Title = "Add Discount";
+    ViewBag.ActiveMenu = "Discount";
+}
+
+<div class="card">
+
+    <div class="card-header">
+        <i class="fa fa-plus"></i> Add New Discount
+    </div>
+
+    <div class="card-body">
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fa fa-exclamation-circle"></i> @ViewBag.Error
+            </div>
+        }
+
+        @using (Html.BeginForm("Create", "Discount",
+                FormMethod.Post, new { id = "discountForm" }))
+        {
+            <div class="row">
+
+                <!-- Discount Name -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>
+                            Discount Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text"
+                               id="DiscountName"
+                               name="DiscountName"
+                               class="form-control"
+                               placeholder="e.g. Early Payment Discount" />
+                        <span class="field-error" id="discountNameError"></span>
+                    </div>
+                </div>
+
+                <!-- Discount Type selector -->
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Discount Type</label>
+                        <select id="discountType" class="form-control">
+                            <option value="">-- Select Type --</option>
+                            <option value="amount">Fixed Amount (₱)</option>
+                            <option value="percent">Percentage (%)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Status</label>
+                        <div style="margin-top:8px">
+                            <input type="hidden" name="IsActive" value="false" />
+                            <input type="checkbox"
+                                   id="IsActive"
+                                   name="IsActive"
+                                   value="true"
+                                   checked="checked" />
+                            <label for="IsActive" style="font-weight:normal">
+                                Active
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <!-- Fixed Amount input (shown/hidden by discount.js) -->
+                <div class="col-md-3" id="amountGroup">
+                    <div class="form-group">
+                        <label>Fixed Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">₱</span>
+                            <input type="number"
+                                   id="DiscountAmount"
+                                   name="DiscountAmount"
+                                   class="form-control"
+                                   placeholder="0.00"
+                                   value="0"
+                                   min="0"
+                                   step="0.01" />
+                        </div>
+                        <span class="field-error" id="discountAmountError"></span>
+                    </div>
+                </div>
+
+                <!-- Percent input (shown/hidden by discount.js) -->
+                <div class="col-md-3" id="percentGroup">
+                    <div class="form-group">
+                        <label>Discount Percent</label>
+                        <div class="input-group">
+                            <input type="number"
+                                   id="DiscountPercent"
+                                   name="DiscountPercent"
+                                   class="form-control"
+                                   placeholder="0.00"
+                                   value="0"
+                                   min="0"
+                                   max="100"
+                                   step="0.01" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                        <span class="field-error" id="discountPercentError"></span>
+                    </div>
+                </div>
+
+                <!-- Live preview updated by discount.js -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Preview</label>
+                        <p id="discountPreview"
+                           class="form-control-static"
+                           style="font-weight:bold">
+                        </p>
+                        <span class="field-error" id="discountValueError"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Description -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>
+                            Description
+                            <small class="text-muted">(optional)</small>
+                        </label>
+                        <textarea id="Description"
+                                  name="Description"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Enter discount description or conditions..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info box -->
+            <div class="alert alert-info" style="font-size:12px">
+                <i class="fa fa-info-circle"></i>
+                <strong>Note:</strong>
+                Use <strong>Fixed Amount</strong> for a specific peso deduction
+                (e.g. ₱500 off). Use <strong>Percentage</strong> for a
+                percent-based deduction from total fee (e.g. 10% off).
+                Only one type applies per discount.
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-save"></i> Save Discount
+                </button>
+                <a href="@Url.Action("Index", "Discount")"
+                   class="btn btn-default">
+                    <i class="fa fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        }
+
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScript/discount.js"></script>
+}

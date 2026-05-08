@@ -1,0 +1,543 @@
+﻿@{
+    ViewBag.Title = "Create Assessment";
+    ViewBag.ActiveMenu = "Assessment";
+}
+
+<div class="card">
+
+    <div class="card-header">
+        <i class="fa fa-file-text"></i> Create Fee Assessment
+    </div>
+
+    <div class="card-body">
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fa fa-exclamation-circle"></i> @ViewBag.Error
+            </div>
+        }
+
+        @using (Html.BeginForm("Create", "Assessment",
+                FormMethod.Post, new { id = "assessmentForm" }))
+        {
+            <!-- Hidden field: stores the loaded FeeScheduleID -->
+            <input type="hidden" id="FeeScheduleID" name="FeeScheduleID" value="0" />
+
+            <!-- ── SECTION 1: Student Selection ── -->
+            <div class="card" style="border:1px solid #ddd;margin-bottom:20px">
+                <div class="card-header"
+                     style="background:#3498db;color:#fff;font-size:13px">
+                    <i class="fa fa-user"></i> Student Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+
+                        <!-- Student dropdown -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Select Student <span class="text-danger">*</span></label>
+                                <select id="StudentID" name="StudentID"
+                                        class="form-control">
+                                    <option value="0">-- Select Student --</option>
+                                    @if (ViewBag.Students != null)
+                                    {
+                                        var students = ViewBag.Students
+                                                       as System.Data.DataTable;
+                                        foreach (System.Data.DataRow row in students.Rows)
+                                        {
+                                            <option value="@row["StudentID"]">
+                                                @row["StudentNumber"] -
+                                                @row["LastName"], @row["FirstName"]
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                                <span class="field-error" id="studentError"></span>
+                            </div>
+                        </div>
+
+                        <!-- Units Enrolled -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Units Enrolled <span class="text-danger">*</span></label>
+                                <input type="number"
+                                       id="UnitsEnrolled"
+                                       name="UnitsEnrolled"
+                                       class="form-control"
+                                       placeholder="e.g. 21"
+                                       min="1" max="30" />
+                                <span class="field-error" id="unitsError"></span>
+                            </div>
+                        </div>
+
+                        <!-- School Year (auto-filled) -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>School Year</label>
+                                <input type="text"
+                                       id="SchoolYear"
+                                       name="SchoolYear"
+                                       class="form-control"
+                                       value="@ViewBag.DefaultSchoolYear"
+                                       maxlength="9" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <!-- Course (auto-filled from student) -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Course</label>
+                                <input type="text"
+                                       id="CourseDisplay"
+                                       class="form-control"
+                                       readonly
+                                       placeholder="Auto-filled from student" />
+                                <!-- Hidden field sends CourseID to controller -->
+                                <input type="hidden" id="CourseID" name="CourseID" />
+                            </div>
+                        </div>
+
+                        <!-- Year Level (auto-filled) -->
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Year Level</label>
+                                <input type="text"
+                                       id="YearLevel"
+                                       class="form-control"
+                                       readonly
+                                       placeholder="Auto-filled" />
+                            </div>
+                        </div>
+
+                        <!-- Semester (auto-filled, but editable) -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Semester <span class="text-danger">*</span></label>
+                                <select id="Semester" name="Semester"
+                                        class="form-control">
+                                    <option value="">-- Select --</option>
+                                    <option value="1st">1st Sem</option>
+                                    <option value="2nd">2nd Sem</option>
+                                    <option value="Summer">Summer</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Alert if no fee schedule found -->
+                    <div id="feeScheduleAlert"
+                         class="alert alert-warning"
+                         style="display:none">
+                        <i class="fa fa-warning"></i>
+                        No fee schedule found for the selected course, school year,
+                        and semester. Please set up a fee schedule first.
+                    </div>
+                    <span class="field-error" id="feeScheduleError"></span>
+
+                </div>
+            </div>
+
+            <!-- ── SECTION 2: Fee Breakdown (auto-computed) ── -->
+            <div class="card" style="border:1px solid #ddd;margin-bottom:20px">
+                <div class="card-header"
+                     style="background:#27ae60;color:#fff;font-size:13px">
+                    <i class="fa fa-money"></i> Fee Breakdown
+                </div>
+                <div class="card-body">
+
+                    <!-- Hidden fee fields (populated via AJAX) -->
+                    <input type="hidden" id="TuitionFeePerUnit" name="TuitionFeePerUnit" />
+                    <input type="hidden" id="RegistrationFee" name="RegistrationFee" />
+                    <input type="hidden" id="MiscellaneousFee" name="MiscellaneousFee" />
+                    <input type="hidden" id="LaboratoryFee" name="LaboratoryFee" />
+
+                    <div class="row">
+
+                        <!-- Fee display table -->
+                        <div class="col-md-6">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <td>Tuition Fee</td>
+                                    <td class="text-right" id="displayTuition">₱0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Registration Fee</td>
+                                    <td class="text-right" id="displayRegFee">₱0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Miscellaneous Fee</td>
+                                    <td class="text-right" id="displayMiscFee">₱0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Laboratory Fee</td>
+                                    <td class="text-right" id="displayLabFee">₱0.00</td>
+                                </tr>
+                                <tr class="active">
+                                    <td><strong>Total Assessment</strong></td>
+                                    <td class="text-right">
+                                        <strong id="displayTotal">₱0.00</strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Deductions and Net -->
+                        <div class="col-md-6">
+
+                            <!-- Scholarship dropdown with data attributes for JS computation -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Scholarship <small class="text-muted">(optional)</small></label>
+                                    <select id="ScholarshipID" name="ScholarshipID" class="form-control">
+                                        <option value="0" data-percent="0">-- None --</option>
+                                        @if (ViewBag.Scholarships != null)
+                                        {
+                                            var scholarships = ViewBag.Scholarships
+                                                               as System.Data.DataTable;
+                                            foreach (System.Data.DataRow row in scholarships.Rows)
+                                            {
+                                                <!-- data-percent used by assessment.js to compute deduction -->
+                                                <option value="@row["ScholarshipID"]"
+                                                        data-percent="@row["DiscountPercent"]">
+                                                    @row["ScholarshipName"]
+                                                    (@row["DiscountPercent"]%)
+                                                </option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Discount dropdown with data attributes for JS computation -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Discount <small class="text-muted">(optional)</small></label>
+                                    <select id="DiscountID" name="DiscountID" class="form-control">
+                                        <option value="0" data-amount="0" data-percent="0">-- None --</option>
+                                        @if (ViewBag.Discounts != null)
+                                        {
+                                            var discounts = ViewBag.Discounts
+                                                            as System.Data.DataTable;
+                                            foreach (System.Data.DataRow row in discounts.Rows)
+                                            {
+                                                decimal amt = Convert.ToDecimal(row["DiscountAmount"]);
+                                                decimal pct = Convert.ToDecimal(row["DiscountPercent"]);
+                                                string label = pct > 0
+                                                    ? row["DiscountName"] + " (" + pct + "%)"
+                                                    : row["DiscountName"] + " (₱" +
+                                                      string.Format("{0:N2}", amt) + ")";
+
+                                                <!-- data-amount and data-percent used by assessment.js -->
+                                                <option value="@row["DiscountID"]"
+                                                        data-amount="@amt"
+                                                        data-percent="@pct">
+                                                    @label
+                                                </option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Deduction and Net summary -->
+                            <table class="table table-condensed">
+                                <tr style="color:#e74c3c">
+                                    <td>Scholarship Deduction</td>
+                                    <td class="text-right" id="displayScholarship">
+                                        - ₱0.00
+                                    </td>
+                                </tr>
+                                <tr style="color:#e74c3c">
+                                    <td>Discount Deduction</td>
+                                    <td class="text-right" id="displayDiscount">
+                                        - ₱0.00
+                                    </td>
+                                </tr>
+                                <tr class="success">
+                                    <td><strong>Net Assessment</strong></td>
+                                    <td class="text-right">
+                                        <strong id="displayNet"
+                                                style="font-size:18px;color:#27ae60">
+                                            ₱0.00
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── SECTION 3: Payment Terms Preview ── -->
+            <div class="card" style="border:1px solid #ddd;margin-bottom:20px">
+                <div class="card-header"
+                     style="background:#e67e22;color:#fff;font-size:13px">
+                    <i class="fa fa-calendar"></i> Payment Terms Breakdown
+                    <small style="opacity:0.8">
+                        (Auto-generated after saving)
+                    </small>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+
+                        <div class="col-md-3">
+                            <div style="border:1px solid #ddd;
+                                        border-radius:6px;padding:15px">
+                                <div style="font-size:11px;color:#888">
+                                    PRELIM (53%)
+                                </div>
+                                <div id="displayPrelim"
+                                     style="font-size:20px;font-weight:bold;
+                                            color:#3498db">
+                                    ₱0.00
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div style="border:1px solid #ddd;
+                                        border-radius:6px;padding:15px">
+                                <div style="font-size:11px;color:#888">
+                                    MIDTERM (64%)
+                                </div>
+                                <div id="displayMidterm"
+                                     style="font-size:20px;font-weight:bold;
+                                            color:#27ae60">
+                                    ₱0.00
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div style="border:1px solid #ddd;
+                                        border-radius:6px;padding:15px">
+                                <div style="font-size:11px;color:#888">
+                                    SEMI-FINAL (75%)
+                                </div>
+                                <div id="displaySemiFinal"
+                                     style="font-size:20px;font-weight:bold;
+                                            color:#e67e22">
+                                    ₱0.00
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div style="border:1px solid #ddd;
+                                        border-radius:6px;padding:15px">
+                                <div style="font-size:11px;color:#888">
+                                    FINAL (100%)
+                                </div>
+                                <div id="displayFinal"
+                                     style="font-size:20px;font-weight:bold;
+                                            color:#e74c3c">
+                                    ₱0.00
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── BUTTONS ── -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-save"></i> Save Assessment
+                </button>
+                <a href="@Url.Action("Index", "Assessment")"
+                   class="btn btn-default">
+                    <i class="fa fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        }
+
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScript/assessment.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            // ── WHEN STUDENT IS SELECTED ──
+            $("#StudentID").on("change", function () {
+
+                var studentID = $(this).val();
+
+                // Reset everything if no student selected
+                if (!studentID || studentID == "0") {
+                    resetForm();
+                    return;
+                }
+
+                // AJAX to get student info
+                $.ajax({
+                    url: "/Assessment/GetStudentInfo",
+                    type: "GET",
+                    data: { studentID: studentID },
+                    success: function (r) {
+                        if (r.success) {
+
+                            // Fill course
+                            $("#CourseID").val(r.courseID);
+                            $("#CourseDisplay").val(r.courseName);
+
+                            // Fill year level
+                            $("#YearLevelDisplay").val("Year " + r.yearLevel);
+
+                            // Fix semester value
+                            // Stored values: "1st", "2nd", "Summer"
+                            // Dropdown values: "1st", "2nd", "Summer"
+                            var sem = r.semester.replace(" Sem", "").trim();
+                            $("#Semester").val(sem);
+
+                            // Fix school year
+                            // If stored as just "2026" fix to "2026-2027"
+                            var sy = r.schoolYear.trim();
+                            if (sy.length === 4 && !sy.includes("-")) {
+                                var yr = parseInt(sy);
+                                sy = yr + "-" + (yr + 1);
+                            }
+                            $("#SchoolYear").val(sy);
+
+                            // Hide alerts
+                            $("#feeScheduleAlert").hide();
+                            $("#feeScheduleSuccess").hide();
+
+                            // Reset fee fields
+                            resetFeeFields();
+
+                        } else {
+                            alert("Could not load student information.");
+                        }
+                    },
+                    error: function () {
+                        alert("Error loading student info.");
+                    }
+                });
+            });
+
+            // ── LOAD FEE SCHEDULE BUTTON ──
+            $("#btnLoadFeeSchedule").on("click", function () {
+
+                var courseID = $("#CourseID").val();
+                var schoolYear = $("#SchoolYear").val().trim();
+                var semester = $("#Semester").val();
+
+                // Validate
+                if (!courseID || courseID == "0") {
+                    alert("Please select a student first.");
+                    return;
+                }
+                if (!schoolYear) {
+                    alert("Please enter the school year (e.g. 2026-2027).");
+                    return;
+                }
+                if (!semester) {
+                    alert("Please select a semester.");
+                    return;
+                }
+
+                // Hide alerts
+                $("#feeScheduleAlert").hide();
+                $("#feeScheduleSuccess").hide();
+
+                // Show loading state on button
+                $("#btnLoadFeeSchedule")
+                    .html('<i class="fa fa-spinner fa-spin"></i> Loading...')
+                    .prop("disabled", true);
+
+                // AJAX to get fee schedule
+                $.ajax({
+                    url: "/FeeSchedule/GetByCourseSemester",
+                    type: "GET",
+                    data: {
+                        courseID: courseID,
+                        schoolYear: schoolYear,
+                        semester: semester
+                    },
+                    success: function (response) {
+
+                        // Restore button
+                        $("#btnLoadFeeSchedule")
+                            .html('<i class="fa fa-refresh"></i> Load Fee Schedule')
+                            .prop("disabled", false);
+
+                        if (response.success) {
+
+                            // Fill fee fields
+                            $("#FeeScheduleID").val(response.feeScheduleID);
+                            $("#TuitionFeePerUnit").val(
+                                parseFloat(response.tuitionFeePerUnit).toFixed(2));
+                            $("#RegistrationFee").val(
+                                parseFloat(response.registrationFee).toFixed(2));
+                            $("#MiscellaneousFee").val(
+                                parseFloat(response.miscellaneousFee).toFixed(2));
+                            $("#LaboratoryFee").val(
+                                parseFloat(response.laboratoryFee).toFixed(2));
+
+                            // Show success
+                            $("#feeScheduleSuccess").show();
+                            setTimeout(function () {
+                                $("#feeScheduleSuccess").fadeOut();
+                            }, 3000);
+
+                            // Recompute totals
+                            computeAssessment();
+
+                        } else {
+                            // Show warning with exact values used
+                            $("#feeScheduleAlert").show();
+                            $("#FeeScheduleID").val(0);
+                            resetFeeFields();
+
+                            // Debug info to help fix data mismatch
+                            console.log("Searched for:", {
+                                courseID: courseID,
+                                schoolYear: schoolYear,
+                                semester: semester
+                            });
+                        }
+                    },
+                    error: function () {
+                        $("#btnLoadFeeSchedule")
+                            .html('<i class="fa fa-refresh"></i> Load Fee Schedule')
+                            .prop("disabled", false);
+                        alert("Error loading fee schedule.");
+                    }
+                });
+            });
+
+            // ── HELPER: Reset entire form ──
+            function resetForm() {
+                $("#CourseID").val(0);
+                $("#CourseDisplay").val("");
+                $("#YearLevelDisplay").val("");
+                $("#Semester").val("");
+                $("#SchoolYear").val("");
+                $("#feeScheduleAlert").hide();
+                $("#feeScheduleSuccess").hide();
+                resetFeeFields();
+            }
+
+            // ── HELPER: Reset fee fields only ──
+            function resetFeeFields() {
+                $("#FeeScheduleID").val(0);
+                $("#TuitionFeePerUnit").val("0.00");
+                $("#RegistrationFee").val("0.00");
+                $("#MiscellaneousFee").val("0.00");
+                $("#LaboratoryFee").val("0.00");
+                computeAssessment();
+            }
+
+        });
+    </script>
+}

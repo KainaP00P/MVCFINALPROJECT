@@ -1,0 +1,180 @@
+﻿@{
+    ViewBag.Title = "Scholarship Management";
+    ViewBag.ActiveMenu = "Scholarship";
+}
+
+<div class="card">
+
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6">
+                <i class="fa fa-graduation-cap"></i> Scholarship Management
+            </div>
+            <div class="col-md-6 text-right">
+                <!-- Status filter -->
+                <select id="filterStatus"
+                        class="form-control input-sm no-print"
+                        style="width:120px;display:inline-block;margin-right:5px">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+                <!-- Search -->
+                <input type="text"
+                       id="searchScholarship"
+                       class="form-control input-sm no-print"
+                       placeholder="Search..."
+                       style="width:180px;display:inline-block;margin-right:5px" />
+                <!-- Add button -->
+                <a href="@Url.Action("Create", "Scholarship")"
+                   class="btn btn-sm btn-primary no-print">
+                    <i class="fa fa-plus"></i> Add Scholarship
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body" style="padding:0">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success" style="margin:15px">
+                <i class="fa fa-check-circle"></i> @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger" style="margin:15px">
+                <i class="fa fa-exclamation-circle"></i> @TempData["Error"]
+            </div>
+        }
+
+        <table class="table table-striped table-hover" id="scholarshipTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Scholarship Name</th>
+                    <th>Description</th>
+                    <th>Discount %</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th class="no-print">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.Scholarships != null)
+                {
+                    var scholarships = ViewBag.Scholarships
+                                       as System.Data.DataTable;
+                    int counter = 1;
+
+                    if (scholarships.Rows.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">
+                                No scholarships found. Click Add Scholarship to begin.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (System.Data.DataRow row in scholarships.Rows)
+                        {
+                            bool isActive = Convert.ToBoolean(row["IsActive"]);
+                            decimal percent = Convert.ToDecimal(row["DiscountPercent"]);
+
+                            // Determine scholarship type label based on percent
+                            string typeLabel = percent == 100 ? "Full" :
+                                               percent >= 50 ? "Half" : "Partial";
+                            string typeColor = percent == 100 ? "#27ae60" :
+                                               percent >= 50 ? "#e67e22" : "#3498db";
+                            <tr>
+                                <td>@counter</td>
+                                <td><strong>@row["ScholarshipName"]</strong></td>
+                                <td>
+                                    <small class="text-muted">
+                                        @row["Description"]
+                                    </small>
+                                </td>
+                                <td>
+                                    <strong style="color:#2c3e50">
+                                        @percent.ToString("0.##")%
+                                    </strong>
+                                </td>
+                                <td>
+                                    <!-- Scholarship type badge -->
+                                    <span class="status-badge"
+                                          style="background:@typeColor;color:#fff">
+                                        @typeLabel
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="status-badge @(isActive
+                                          ? "badge-active" : "badge-inactive")">
+                                        @(isActive ? "Active" : "Inactive")
+                                    </span>
+                                </td>
+                                <td class="no-print">
+                                    <!-- Edit -->
+                                    <a href="@Url.Action("Edit","Scholarship",
+                                             new { id = row["ScholarshipID"] })"
+                                       class="btn btn-xs btn-warning">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <!-- Toggle Active/Inactive -->
+                                    @using (Html.BeginForm("ToggleStatus",
+                                            "Scholarship",
+                                            new { id = row["ScholarshipID"] },
+                                            FormMethod.Post))
+                                    {
+                                        <button type="submit"
+                                                class="btn btn-xs @(isActive
+                                                       ? "btn-default" : "btn-success")
+                                                       btn-toggle"
+                                                data-name="@row["ScholarshipName"]"
+                                                data-status="@(isActive ? "1" : "0")"
+                                                title="@(isActive
+                                                       ? "Deactivate" : "Activate")">
+                                            <i class="fa @(isActive
+                                               ? "fa-toggle-on" : "fa-toggle-off")">
+                                            </i>
+                                        </button>
+                                    }
+                                    <!-- Delete -->
+                                    @using (Html.BeginForm("Delete", "Scholarship",
+                                            new { id = row["ScholarshipID"] },
+                                            FormMethod.Post))
+                                    {
+                                        <button type="submit"
+                                                class="btn btn-xs btn-danger btn-delete"
+                                                data-name="@row["ScholarshipName"]">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                            counter++;
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="card-body"
+         style="padding:10px;border-top:1px solid #eee;
+                font-size:12px;color:#888">
+        @if (ViewBag.Scholarships != null)
+        {
+            var scholarships = ViewBag.Scholarships as System.Data.DataTable;
+            <i class="fa fa-info-circle"></i>
+            @: Total: @scholarships.Rows.Count scholarship(s)
+        }
+    </div>
+
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScript/scholarship.js"></script>
+}

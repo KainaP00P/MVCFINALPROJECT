@@ -1,0 +1,231 @@
+﻿@{
+    ViewBag.Title = "Payment Details";
+    ViewBag.ActiveMenu = "Payment";
+
+    var payment = ViewBag.Payment as System.Data.DataRow;
+}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+
+        <div class="card">
+
+            <!-- Card Header -->
+            <div class="card-header">
+                <i class="fa fa-credit-card"></i> Payment Receipt
+                <span class="pull-right no-print">
+                    <button id="btnPrint" class="btn btn-xs btn-info">
+                        <i class="fa fa-print"></i> Print Receipt
+                    </button>
+                    <a href="@Url.Action("Index","Payment")"
+                       class="btn btn-xs btn-default">
+                        <i class="fa fa-arrow-left"></i> Back
+                    </a>
+                </span>
+            </div>
+
+            @if (payment != null)
+            {
+                <div class="card-body">
+
+                    <!-- ── RECEIPT HEADER ── -->
+                    <div class="text-center" style="margin-bottom:20px">
+                        <i class="fa fa-university"
+                           style="font-size:36px;color:#3498db"></i>
+                        <h4 style="margin:5px 0;color:#2c3e50">
+                            Student Accounting System
+                        </h4>
+                        <p style="color:#888;font-size:12px;margin:0">
+                            Official Payment Receipt
+                        </p>
+                        <hr />
+                    </div>
+
+                    <!-- ── OR NUMBER BADGE ── -->
+                    <div class="text-center" style="margin-bottom:20px">
+                        <div style="display:inline-block;
+                                    background:#2c3e50;
+                                    color:#fff;
+                                    padding:8px 25px;
+                                    border-radius:20px;
+                                    font-size:16px;
+                                    font-weight:bold">
+                            OR No: @payment["ORNumber"]
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <!-- ── LEFT: Student Info ── -->
+                        <div class="col-md-6">
+                            <div style="background:#f8f9fa;
+                                        padding:15px;
+                                        border-radius:5px;
+                                        margin-bottom:15px">
+                                <div style="font-size:12px;color:#888;
+                                            text-transform:uppercase;
+                                            margin-bottom:10px;
+                                            font-weight:bold">
+                                    Student Information
+                                </div>
+                                <table style="width:100%;font-size:13px">
+                                    <tr>
+                                        <td style="color:#888;
+                                                   padding:3px 0;
+                                                   width:120px">
+                                            Student No:
+                                        </td>
+                                        <td>
+                                            <strong>@payment["StudentNumber"]</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color:#888;padding:3px 0">
+                                            Name:
+                                        </td>
+                                        <td>
+                                            <strong>@payment["StudentName"]</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color:#888;padding:3px 0">
+                                            Term:
+                                        </td>
+                                        <td>
+                                            <strong style="color:#3498db">
+                                                @payment["TermName"]
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ── RIGHT: Payment Info ── -->
+                        <div class="col-md-6">
+                            <div style="background:#f8f9fa;
+                                        padding:15px;
+                                        border-radius:5px;
+                                        margin-bottom:15px">
+                                <div style="font-size:12px;color:#888;
+                                            text-transform:uppercase;
+                                            margin-bottom:10px;
+                                            font-weight:bold">
+                                    Payment Information
+                                </div>
+                                <table style="width:100%;font-size:13px">
+                                    <tr>
+                                        <td style="color:#888;
+                                                   padding:3px 0;
+                                                   width:120px">
+                                            Date:
+                                        </td>
+                                        <td>
+                                            <strong>
+                                                @Convert.ToDateTime(
+                                                 payment["PaymentDate"])
+                                                .ToString("MMMM dd, yyyy")
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color:#888;padding:3px 0">
+                                            Method:
+                                        </td>
+                                        <td>@payment["PaymentMethod"]</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color:#888;padding:3px 0">
+                                            Received By:
+                                        </td>
+                                        <td>@payment["ReceivedByName"]</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ── AMOUNT PAID HIGHLIGHT ── -->
+                    <div style="background:linear-gradient(135deg,#27ae60,#2ecc71);
+                                color:#fff;
+                                text-align:center;
+                                padding:20px;
+                                border-radius:8px;
+                                margin-bottom:20px">
+                        <div style="font-size:13px;opacity:0.9">
+                            Amount Paid
+                        </div>
+                        <div style="font-size:36px;font-weight:bold">
+                            ₱@string.Format("{0:N2}", payment["AmountPaid"])
+                        </div>
+                        <div style="font-size:12px;opacity:0.8;margin-top:5px">
+                            Amount Due: ₱@string.Format("{0:N2}", payment["AmountDue"])
+                        </div>
+                    </div>
+
+                    <!-- ── REMARKS ── -->
+                    @if (!string.IsNullOrEmpty(payment["Remarks"].ToString()))
+                    {
+                        <div style="background:#fff3cd;
+                                    padding:10px 15px;
+                                    border-radius:5px;
+                                    border-left:4px solid #ffc107;
+                                    margin-bottom:15px;
+                                    font-size:13px">
+                            <strong>Remarks:</strong> @payment["Remarks"]
+                        </div>
+                    }
+
+                    <!-- ── RECEIPT FOOTER ── -->
+                    <hr />
+                    <div class="row" style="font-size:12px;color:#888">
+                        <div class="col-md-6">
+                            <i class="fa fa-calendar"></i>
+                            Printed: @DateTime.Now.ToString("MMMM dd, yyyy hh:mm tt")
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <i class="fa fa-check-circle"
+                               style="color:#27ae60"></i>
+                            Payment verified and recorded
+                        </div>
+                    </div>
+
+                    <!-- ── SIGNATURE LINES (for print) ── -->
+                    <div class="row" style="margin-top:40px">
+                        <div class="col-md-5 text-center">
+                            <div style="border-top:1px solid #333;
+                                        padding-top:5px;
+                                        font-size:12px">
+                                Student Signature
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-5 text-center">
+                            <div style="border-top:1px solid #333;
+                                        padding-top:5px;
+                                        font-size:12px">
+                                Cashier / Received By
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fa fa-warning"></i> Payment not found.
+                    </div>
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScript/payment.js"></script>
+}

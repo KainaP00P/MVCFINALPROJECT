@@ -1,0 +1,325 @@
+﻿@{
+    ViewBag.Title = "Edit Student";
+    ViewBag.ActiveMenu = "Student";
+
+    // Get student data passed from controller
+    var student = ViewBag.Student as System.Data.DataRow;
+}
+
+<div class="card">
+
+    <!-- Card Header -->
+    <div class="card-header">
+        <i class="fa fa-edit"></i> Edit Student Record
+        @if (student != null)
+        {
+            <small class="text-muted" style="margin-left:10px">
+                Student No: @student["StudentNumber"]
+            </small>
+        }
+    </div>
+
+    <div class="card-body">
+
+        <!-- Error message -->
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fa fa-exclamation-circle"></i> @ViewBag.Error
+            </div>
+        }
+
+        @if (student != null)
+        {
+            using (Html.BeginForm("Edit", "Student",
+                   new RouteValueDictionary { { "id", student["StudentID"] } },
+                   FormMethod.Post,
+                   new { id = "studentForm" }))
+            {
+                <!-- ── SECTION 1: Personal Information ── -->
+                <div class="card" style="border:1px solid #ddd;margin-bottom:20px">
+                    <div class="card-header"
+                         style="background:#27ae60;color:#fff;font-size:13px">
+                        <i class="fa fa-user"></i> Personal Information
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+
+                            <!-- First Name -->
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>First Name <span class="text-danger">*</span></label>
+                                    <input type="text"
+                                           id="FirstName"
+                                           name="FirstName"
+                                           class="form-control"
+                                           value="@student["FirstName"]" />
+                                    <span class="field-error" id="firstNameError"></span>
+                                </div>
+                            </div>
+
+                            <!-- Middle Name -->
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Middle Name</label>
+                                    <input type="text"
+                                           id="MiddleName"
+                                           name="MiddleName"
+                                           class="form-control"
+                                           value="@student["MiddleName"]" />
+                                </div>
+                            </div>
+
+                            <!-- Last Name -->
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Last Name <span class="text-danger">*</span></label>
+                                    <input type="text"
+                                           id="LastName"
+                                           name="LastName"
+                                           class="form-control"
+                                           value="@student["LastName"]" />
+                                    <span class="field-error" id="lastNameError"></span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <!-- Gender -->
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Gender <span class="text-danger">*</span></label>
+                                    <select id="Gender" name="Gender"
+                                            class="form-control">
+                                        <option value="">-- Select --</option>
+                                        <option value="Male"
+                                                @(student["Gender"].ToString() == "Male" ? "selected" : "")>
+                                            Male
+                                        </option>
+                                        <option value="Female"
+                                                @(student["Gender"].ToString() == "Female" ? "selected" : "")>
+                                            Female
+                                        </option>
+                                    </select>
+                                    <span class="field-error" id="genderError"></span>
+                                </div>
+                            </div>
+
+                            <!-- Birth Date -->
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Birth Date <span class="text-danger">*</span></label>
+                                    <input type="date"
+                                           id="BirthDate"
+                                           name="BirthDate"
+                                           class="form-control"
+                                           value="@Convert.ToDateTime(
+                                                   student["BirthDate"])
+                                                   .ToString(" yyyy-MM-dd")" />
+                                    <span class="field-error" id="birthDateError"></span>
+                                </div>
+                            </div>
+
+                            <!-- Contact Number -->
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Contact Number <span class="text-danger">*</span></label>
+                                    <input type="text"
+                                           id="ContactNumber"
+                                           name="ContactNumber"
+                                           class="form-control"
+                                           value="@student["ContactNumber"]"
+                                           maxlength="11" />
+                                    <span class="field-error" id="contactError"></span>
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Email <span class="text-danger">*</span></label>
+                                    <input type="email"
+                                           id="Email"
+                                           name="Email"
+                                           class="form-control"
+                                           value="@student["Email"]" />
+                                    <span class="field-error" id="emailError"></span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Address -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Address <span class="text-danger">*</span></label>
+                                    <input type="text"
+                                           id="Address"
+                                           name="Address"
+                                           class="form-control"
+                                           value="@student["Address"]" />
+                                    <span class="field-error" id="addressError"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ── SECTION 2: Academic Information ── -->
+                <div class="card" style="border:1px solid #ddd;margin-bottom:20px">
+                    <div class="card-header"
+                         style="background:#e67e22;color:#fff;font-size:13px">
+                        <i class="fa fa-book"></i> Academic Information
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+
+                            <!-- Course -->
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Course <span class="text-danger">*</span></label>
+                                    <select id="CourseID" name="CourseID"
+                                            class="form-control">
+                                        <option value="">-- Select Course --</option>
+                                        @if (ViewBag.Courses != null)
+                                        {
+                                            var courses = ViewBag.Courses
+                                                          as System.Data.DataTable;
+                                            foreach (System.Data.DataRow row
+                                                     in courses.Rows)
+                                            {
+                                                <option value="@row["CourseID"]"
+                                                        @(row["CourseID"].ToString() == student["CourseID"].ToString() ? "selected" : "")>
+                                                    @row["CourseCode"] -
+                                                    @row["CourseName"]
+                                                </option>
+                                            }
+                                        }
+                                    </select>
+                                    <span class="field-error" id="courseError"></span>
+                                </div>
+                            </div>
+
+                            <!-- Year Level -->
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>Year Level <span class="text-danger">*</span></label>
+                                    <select id="YearLevel" name="YearLevel"
+                                            class="form-control">
+                                        <option value="">--</option>
+                                        @for (int i = 1; i <= 4; i++)
+                                        {
+                                            <option value="@i"
+                                                    @(student["YearLevel"].ToString() == i.ToString() ? "selected" : "")>
+                                                @i@(i == 1 ? "st" : i == 2 ? "nd" :
+                                                   i == 3 ? "rd" : "th") Year
+                                            </option>
+                                        }
+                                    </select>
+                                    <span class="field-error" id="yearLevelError"></span>
+                                </div>
+                            </div>
+
+                            <!-- Semester -->
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>Semester <span class="text-danger">*</span></label>
+                                    <select id="Semester" name="Semester"
+                                            class="form-control">
+                                        <option value="">--</option>
+                                        <option value="1st"
+                                                @(student["Semester"].ToString() == "1st" ? "selected" : "")>
+                                            1st Sem
+                                        </option>
+                                        <option value="2nd"
+                                                @(student["Semester"].ToString() == "2nd" ? "selected" : "")>
+                                            2nd Sem
+                                        </option>
+                                        <option value="Summer"
+                                                @(student["Semester"].ToString() == "Summer" ? "selected" : "")>
+                                            Summer
+                                        </option>
+                                    </select>
+                                    <span class="field-error" id="semesterError"></span>
+                                </div>
+                            </div>
+
+                            <!-- School Year -->
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>School Year <span class="text-danger">*</span></label>
+                                    <input type="text"
+                                           id="SchoolYear"
+                                           name="SchoolYear"
+                                           class="form-control"
+                                           value="@student["SchoolYear"]"
+                                           maxlength="9" />
+                                    <span class="field-error" id="schoolYearError"></span>
+                                </div>
+                            </div>
+
+                            <!-- Enrollment Status -->
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select id="EnrollmentStatus"
+                                            name="EnrollmentStatus"
+                                            class="form-control">
+                                        <option value="Enrolled"
+                                                @(student["EnrollmentStatus"].ToString() == "Enrolled" ? "selected" : "")>
+                                            Enrolled
+                                        </option>
+                                        <option value="Dropped"
+                                                @(student["EnrollmentStatus"].ToString() == "Dropped" ? "selected" : "")>
+                                            Dropped
+                                        </option>
+                                        <option value="Graduated"
+                                                @(student["EnrollmentStatus"].ToString() == "Graduated" ? "selected" : "")>
+                                            Graduated
+                                        </option>
+                                        <option value="LOA"
+                                                @(student["EnrollmentStatus"].ToString() == "LOA" ? "selected" : "")>
+                                            LOA
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── BUTTONS ── -->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Save Changes
+                    </button>
+                    <a href="@Url.Action("Details", "Student",
+                             new { id = student["StudentID"] })"
+                       class="btn btn-info">
+                        <i class="fa fa-eye"></i> View Details
+                    </a>
+                    <a href="@Url.Action("Index", "Student")"
+                       class="btn btn-default">
+                        <i class="fa fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                <i class="fa fa-warning"></i> Student not found.
+            </div>
+        }
+
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScript/student.js"></script>
+}

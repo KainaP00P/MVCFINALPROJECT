@@ -1,0 +1,395 @@
+﻿@{
+    ViewBag.Title = "Record Payment";
+    ViewBag.ActiveMenu = "Payment";
+
+    var assessment = ViewBag.Assessment as System.Data.DataRow;
+    var unpaidTerms = ViewBag.UnpaidTerms as System.Data.DataTable;
+}
+
+<div class="row">
+
+    <!-- ── LEFT COLUMN: Payment Form ── -->
+    <div class="col-md-7">
+        <div class="card">
+
+            <!-- Card Header -->
+            <div class="card-header">
+                <i class="fa fa-credit-card"></i> Record Payment
+                <a href="@Url.Action("Details","Assessment",
+                         new { id = assessment["AssessmentID"] })"
+                   class="btn btn-xs btn-default pull-right">
+                    <i class="fa fa-arrow-left"></i> Back to Assessment
+                </a>
+            </div>
+
+            <div class="card-body">
+
+                <!-- Error message -->
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fa fa-exclamation-circle"></i>
+                        @TempData["Error"]
+                    </div>
+                }
+
+                @if (unpaidTerms != null && unpaidTerms.Rows.Count == 0)
+                {
+                    <!-- All terms are paid -->
+                    <div class="alert alert-success">
+                        <i class="fa fa-check-circle"></i>
+                        <strong>All payment terms have been paid!</strong>
+                        This student has no remaining balance.
+                    </div>
+                }
+                else
+                {
+                    using (Html.BeginForm("Create", "Payment",
+                        FormMethod.Post,
+                        new { id = "paymentForm" }))
+                    {
+                        <!-- Hidden assessment ID -->
+                        <input type="hidden"
+                               name="AssessmentID"
+                               value="@assessment["AssessmentID"]" />
+
+                        <!-- ── SECTION 1: Student Info (read only) ── -->
+                        <div class="card"
+                             style="border:1px solid #ddd;margin-bottom:15px">
+                            <div class="card-header"
+                                 style="background:#2c3e50;color:#fff;
+                                        font-size:13px">
+                                <i class="fa fa-user"></i> Student Information
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div style="font-size:12px;color:#888">
+                                            Student Name
+                                        </div>
+                                        <div style="font-weight:bold">
+                                            @assessment["StudentName"]
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div style="font-size:12px;color:#888">
+                                            Student Number
+                                        </div>
+                                        <div style="font-weight:bold">
+                                            @assessment["StudentNumber"]
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:10px">
+                                    <div class="col-md-4">
+                                        <div style="font-size:12px;color:#888">
+                                            School Year
+                                        </div>
+                                        <div>@assessment["SchoolYear"]</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div style="font-size:12px;color:#888">
+                                            Semester
+                                        </div>
+                                        <div>@assessment["Semester"]</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div style="font-size:12px;color:#888">
+                                            Net Assessment
+                                        </div>
+                                        <div style="color:#e67e22;font-weight:bold">
+                                            ₱@string.Format("{0:N2}",
+                                             assessment["NetAssessment"])
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ── SECTION 2: Payment Details ── -->
+                        <div class="card"
+                             style="border:1px solid #ddd;margin-bottom:15px">
+                            <div class="card-header"
+                                 style="background:#27ae60;color:#fff;
+                                        font-size:13px">
+                                <i class="fa fa-money"></i> Payment Details
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row">
+
+                                    <!-- Payment Term Selection -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>
+                                                Payment Term
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select id="TermID"
+                                                    name="TermID"
+                                                    class="form-control">
+                                                <option value="">
+                                                    -- Select Term --
+                                                </option>
+                                                @if (unpaidTerms != null)
+                                                {
+                                                    foreach (System.Data.DataRow row
+                                                             in unpaidTerms.Rows)
+                                                    {
+                                                        <option value="@row["TermID"]">
+                                                            @row["TermName"] -
+                                                            ₱@string.Format("{0:N2}",
+                                                             row["AmountDue"])
+                                                        </option>
+                                                    }
+                                                }
+                                            </select>
+                                            <span class="field-error"
+                                                  id="termError"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Amount Due (auto filled) -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Amount Due</label>
+                                            <div class="form-control"
+                                                 style="background:#f8f9fa;
+                                                        font-weight:bold;
+                                                        color:#e67e22">
+                                                <span id="displayAmountDue">
+                                                    ₱0.00
+                                                </span>
+                                            </div>
+                                            <small class="text-muted"
+                                                   id="amountHint">
+                                                Select a term to see amount due
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <!-- Amount Paid -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>
+                                                Amount Paid
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    ₱
+                                                </span>
+                                                <input type="number"
+                                                       id="AmountPaid"
+                                                       name="AmountPaid"
+                                                       class="form-control"
+                                                       placeholder="0.00"
+                                                       step="0.01"
+                                                       min="0" />
+                                            </div>
+                                            <span class="field-error"
+                                                  id="amountError"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Change / Shortage display -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>
+                                                <span id="changeLabel">
+                                                    Change:
+                                                </span>
+                                            </label>
+                                            <div class="form-control"
+                                                 style="background:#f8f9fa;
+                                                        font-weight:bold">
+                                                <span id="displayChange">
+                                                    ₱0.00
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <!-- Payment Date -->
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>
+                                                Payment Date
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="date"
+                                                   id="PaymentDate"
+                                                   name="PaymentDate"
+                                                   class="form-control" />
+                                            <span class="field-error"
+                                                  id="dateError"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Payment Method -->
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>
+                                                Payment Method
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select id="PaymentMethod"
+                                                    name="PaymentMethod"
+                                                    class="form-control">
+                                                <option value="">-- Select --</option>
+                                                <option value="Cash">Cash</option>
+                                                <option value="Online">Online</option>
+                                                <option value="Bank Transfer">
+                                                    Bank Transfer
+                                                </option>
+                                                <option value="Check">Check</option>
+                                            </select>
+                                            <span class="field-error"
+                                                  id="methodError"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- OR Number -->
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>
+                                                OR Number
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text"
+                                                   id="ORNumber"
+                                                   name="ORNumber"
+                                                   class="form-control"
+                                                   value="@ViewBag.ORNumber" />
+                                            <span class="field-error"
+                                                  id="orError"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Remarks -->
+                                <div class="form-group">
+                                    <label>Remarks (Optional)</label>
+                                    <textarea name="Remarks"
+                                              class="form-control"
+                                              rows="2"
+                                              placeholder="Enter any remarks...">
+                                    </textarea>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-save"></i> Record Payment
+                            </button>
+                            <a href="@Url.Action("Details","Assessment",
+                                     new { id = assessment["AssessmentID"] })"
+                               class="btn btn-default">
+                                <i class="fa fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ── RIGHT COLUMN: Balance Info ── -->
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header"
+                 style="background:#2c3e50;color:#fff">
+                <i class="fa fa-balance-scale"></i> Current Balance
+            </div>
+            <div class="card-body text-center">
+
+                <!-- Balance amounts -->
+                <div style="margin-bottom:15px">
+                    <div style="font-size:12px;color:#888">Total Assessment</div>
+                    <div style="font-size:22px;font-weight:bold;color:#2c3e50">
+                        ₱@string.Format("{0:N2}", assessment["NetAssessment"])
+                    </div>
+                </div>
+
+                <div style="margin-bottom:15px">
+                    <div style="font-size:12px;color:#888">Total Paid</div>
+                    <div style="font-size:22px;font-weight:bold;color:#27ae60">
+                        ₱@string.Format("{0:N2}", ViewBag.TotalPaid)
+                    </div>
+                </div>
+
+                <hr />
+
+                <div>
+                    <div style="font-size:12px;color:#888">Remaining Balance</div>
+                    <div style="font-size:28px;font-weight:bold;
+                         color:@(Convert.ToDecimal(ViewBag.RemainingBalance) > 0
+                                ? "#e74c3c" : "#27ae60")">
+                        ₱@string.Format("{0:N2}", ViewBag.RemainingBalance)
+                    </div>
+                </div>
+
+                <!-- Progress bar -->
+                @{
+                    decimal net = Convert.ToDecimal(assessment["NetAssessment"]);
+                    decimal paid = Convert.ToDecimal(ViewBag.TotalPaid);
+                    int pct = net > 0 ? (int)((paid / net) * 100) : 0;
+                }
+                <div style="margin-top:15px">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-success"
+                             style="width:@pct%">
+                            @pct% Paid
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Selected Term Info Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-calendar"></i> Selected Term
+            </div>
+            <div class="card-body text-center">
+                <div style="font-size:24px;font-weight:bold;color:#3498db">
+                    <span id="displayTermName">--</span>
+                </div>
+                <div style="font-size:13px;color:#888;margin-top:5px">
+                    Amount Due for this term
+                </div>
+                <div style="font-size:22px;font-weight:bold;color:#e67e22">
+                    <span id="displayAmountDue2">₱0.00</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScript/payment.js"></script>
+    <script>
+        // Sync the second amount due display with the first
+        $("#TermID").on("change", function () {
+            setTimeout(function () {
+                $("#displayAmountDue2").text($("#displayAmountDue").text());
+            }, 300);
+        });
+    </script>
+}

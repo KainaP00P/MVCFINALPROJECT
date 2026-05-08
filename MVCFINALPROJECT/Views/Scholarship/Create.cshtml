@@ -1,0 +1,126 @@
+﻿@{
+    ViewBag.Title = "Add Scholarship";
+    ViewBag.ActiveMenu = "Scholarship";
+}
+
+<div class="card">
+
+    <div class="card-header">
+        <i class="fa fa-plus"></i> Add New Scholarship
+    </div>
+
+    <div class="card-body">
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fa fa-exclamation-circle"></i> @ViewBag.Error
+            </div>
+        }
+
+        @using (Html.BeginForm("Create", "Scholarship",
+                FormMethod.Post, new { id = "scholarshipForm" }))
+        {
+            <div class="row">
+
+                <!-- Scholarship Name -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>
+                            Scholarship Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text"
+                               id="ScholarshipName"
+                               name="ScholarshipName"
+                               class="form-control"
+                               placeholder="e.g. Academic Excellence Award" />
+                        <span class="field-error" id="scholarshipNameError"></span>
+                    </div>
+                </div>
+
+                <!-- Discount Percent -->
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>
+                            Discount Percent <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="number"
+                                   id="DiscountPercent"
+                                   name="DiscountPercent"
+                                   class="form-control"
+                                   placeholder="e.g. 100"
+                                   min="1"
+                                   max="100"
+                                   step="0.01" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                        <span class="field-error" id="discountPercentError"></span>
+                        <!-- Live preview updated by scholarship.js -->
+                        <small id="percentPreview" style="font-size:12px"></small>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Status</label>
+                        <div style="margin-top:8px">
+                            <input type="hidden" name="IsActive" value="false" />
+                            <input type="checkbox"
+                                   id="IsActive"
+                                   name="IsActive"
+                                   value="true"
+                                   checked="checked" />
+                            <label for="IsActive" style="font-weight:normal">
+                                Active
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Description -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>
+                            Description <small class="text-muted">(optional)</small>
+                        </label>
+                        <textarea id="Description"
+                                  name="Description"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Enter scholarship description or eligibility requirements..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info box explaining percent values -->
+            <div class="alert alert-info" style="font-size:12px">
+                <i class="fa fa-info-circle"></i>
+                <strong>Discount Percent Guide:</strong>
+                100% = Full Scholarship (no tuition) &nbsp;|&nbsp;
+                50% = Half Scholarship &nbsp;|&nbsp;
+                1-49% = Partial Scholarship
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-save"></i> Save Scholarship
+                </button>
+                <a href="@Url.Action("Index", "Scholarship")"
+                   class="btn btn-default">
+                    <i class="fa fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        }
+
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScript/scholarship.js"></script>
+}

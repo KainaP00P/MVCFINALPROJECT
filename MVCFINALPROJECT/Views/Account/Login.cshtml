@@ -1,0 +1,228 @@
+﻿@{
+    Layout = null; <!-- Login page has no sidebar layout -->
+    ViewBag.Title = "Login";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Student Accounting System</title>
+
+    <!-- Bootstrap 3 CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+          rel="stylesheet" />
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Login card container */
+        .login-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+        }
+
+        /* Top colored header of login card */
+        .login-header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            padding: 30px 20px;
+            text-align: center;
+            color: #fff;
+        }
+
+            .login-header i {
+                font-size: 48px;
+                margin-bottom: 10px;
+                display: block;
+            }
+
+            .login-header h3 {
+                margin: 0;
+                font-size: 20px;
+                font-weight: bold;
+            }
+
+            .login-header p {
+                margin: 5px 0 0;
+                font-size: 12px;
+                opacity: 0.8;
+            }
+
+        /* Login form body */
+        .login-body {
+            padding: 30px;
+        }
+
+            .login-body .form-group {
+                margin-bottom: 20px;
+            }
+
+            .login-body label {
+                font-size: 13px;
+                color: #555;
+                font-weight: bold;
+            }
+
+        /* Input with icon */
+        .input-group-addon {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+        }
+
+        .form-control {
+            border-left: none;
+            box-shadow: none;
+        }
+
+            .form-control:focus {
+                border-color: #3498db;
+                box-shadow: 0 0 5px rgba(52,152,219,0.3);
+            }
+
+        /* Login button */
+        .btn-login {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+            .btn-login:hover {
+                background: linear-gradient(135deg, #1a252f, #2980b9);
+                color: #fff;
+            }
+
+        .field-error {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 3px;
+            display: block;
+        }
+
+        /* Footer of login card */
+        .login-footer {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            font-size: 12px;
+            color: #888;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+
+        <!-- Login Card Header -->
+        <div class="login-header">
+            <i class="fa fa-university"></i>
+            <h3>Student Accounting System</h3>
+            <p>Please sign in to continue</p>
+        </div>
+
+        <!-- Login Card Body -->
+        <div class="login-body">
+
+            <!-- Show error message from controller if any -->
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">
+                    <i class="fa fa-exclamation-circle"></i>
+                    @ViewBag.Error
+                </div>
+            }
+
+            <!-- Login Form -->
+            @using (Html.BeginForm("Login", "Account", FormMethod.Post,
+                    new { id = "loginForm" }))
+            {
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="fa fa-user"></i>
+                        </span>
+                        <input type="text"
+                               id="Username"
+                               name="username"
+                               class="form-control"
+                               placeholder="Enter username"
+                               autocomplete="off" />
+                    </div>
+                    <!-- Validation error placeholder -->
+                    <span class="field-error" id="usernameError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="fa fa-lock"></i>
+                        </span>
+                        <input type="password"
+                               id="Password"
+                               name="password"
+                               class="form-control"
+                               placeholder="Enter password" />
+                        <!-- Toggle password visibility button -->
+                        <span class="input-group-addon"
+                              style="cursor:pointer">
+                            <span class="toggle-password"
+                                  data-target="Password">
+                                <i class="glyphicon glyphicon-eye-open"></i>
+                            </span>
+                        </span>
+                    </div>
+                    <span class="field-error" id="passwordError"></span>
+                </div>
+
+                <!-- Login Submit Button -->
+                <button type="submit" class="btn btn-login">
+                    <i class="fa fa-sign-in"></i> Sign In
+                </button>
+            }
+
+        </div>
+
+        <!-- Login Card Footer -->
+        <div class="login-footer">
+            &copy; @DateTime.Now.Year Student Accounting System
+            <br />
+            <small>Only admin can register student accounts</small>
+        </div>
+
+    </div>
+
+    <!-- jQuery -->
+    <script src="~/Scripts/jQuery/jquery-4.0.0.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+    </script>
+
+    <!-- Account JS for login validation -->
+    <script src="~/Scripts/myScript/account.js"></script>
+
+</body>
+</html>

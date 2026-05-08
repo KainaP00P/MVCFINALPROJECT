@@ -1,0 +1,282 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+    ViewBag.ActiveMenu = "Dashboard";
+}
+
+<!-- ── SUMMARY CARDS ROW ── -->
+<div class="row">
+
+    <!-- Total Students Card -->
+    <div class="col-md-3 col-sm-6">
+        <div class="card" style="border-left: 4px solid #3498db;">
+            <div class="card-body" style="padding:15px">
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div style="font-size:12px;color:#888;text-transform:uppercase">
+                            Enrolled Students
+                        </div>
+                        <div class="summary-count"
+                             data-count="@ViewBag.TotalStudents"
+                             style="font-size:28px;font-weight:bold;color:#2c3e50">
+                            @ViewBag.TotalStudents
+                        </div>
+                    </div>
+                    <div class="col-xs-4 text-right">
+                        <i class="fa fa-users"
+                           style="font-size:40px;color:#3498db;opacity:0.3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Courses Card -->
+    <div class="col-md-3 col-sm-6">
+        <div class="card" style="border-left: 4px solid #27ae60;">
+            <div class="card-body" style="padding:15px">
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div style="font-size:12px;color:#888;text-transform:uppercase">
+                            Active Courses
+                        </div>
+                        <div class="summary-count"
+                             data-count="@ViewBag.TotalCourses"
+                             style="font-size:28px;font-weight:bold;color:#2c3e50">
+                            @ViewBag.TotalCourses
+                        </div>
+                    </div>
+                    <div class="col-xs-4 text-right">
+                        <i class="fa fa-book"
+                           style="font-size:40px;color:#27ae60;opacity:0.3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Collections Card -->
+    <div class="col-md-3 col-sm-6">
+        <div class="card" style="border-left: 4px solid #e67e22;">
+            <div class="card-body" style="padding:15px">
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div style="font-size:12px;color:#888;text-transform:uppercase">
+                            Total Collections
+                        </div>
+                        <div class="summary-currency"
+                             data-count="@ViewBag.TotalCollections"
+                             style="font-size:20px;font-weight:bold;color:#2c3e50">
+                            ₱@string.Format("{0:N2}", ViewBag.TotalCollections)
+                        </div>
+                    </div>
+                    <div class="col-xs-4 text-right">
+                        <i class="fa fa-money"
+                           style="font-size:40px;color:#e67e22;opacity:0.3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Scholarships Card -->
+    <div class="col-md-3 col-sm-6">
+        <div class="card" style="border-left: 4px solid #9b59b6;">
+            <div class="card-body" style="padding:15px">
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div style="font-size:12px;color:#888;text-transform:uppercase">
+                            Scholarships
+                        </div>
+                        <div class="summary-count"
+                             data-count="@ViewBag.TotalScholarships"
+                             style="font-size:28px;font-weight:bold;color:#2c3e50">
+                            @ViewBag.TotalScholarships
+                        </div>
+                    </div>
+                    <div class="col-xs-4 text-right">
+                        <i class="fa fa-graduation-cap"
+                           style="font-size:40px;color:#9b59b6;opacity:0.3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ── STUDENT VIEW: My Assessment Summary ── -->
+@if (Session["Role"].ToString() == "Student" && ViewBag.MyAssessment != null)
+{
+    var myAssessment = ViewBag.MyAssessment as System.Data.DataTable;
+
+    if (myAssessment.Rows.Count > 0)
+    {
+        var row = myAssessment.Rows[0];
+        decimal net = Convert.ToDecimal(row["NetAssessment"]);
+        decimal paid = Convert.ToDecimal(ViewBag.MyTotalPaid);
+        decimal bal = net - paid;
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-file-text"></i> My Assessment Summary
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+
+                    <div class="col-md-3">
+                        <div style="font-size:12px;color:#888">School Year</div>
+                        <div style="font-size:18px;font-weight:bold">
+                            @row["SchoolYear"]
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div style="font-size:12px;color:#888">Total Assessment</div>
+                        <div style="font-size:18px;font-weight:bold;color:#e67e22">
+                            ₱@string.Format("{0:N2}", net)
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div style="font-size:12px;color:#888">Total Paid</div>
+                        <div style="font-size:18px;font-weight:bold;color:#27ae60">
+                            ₱@string.Format("{0:N2}", paid)
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div style="font-size:12px;color:#888">Remaining Balance</div>
+                        <div style="font-size:18px;font-weight:bold;
+                             color:@(bal > 0 ? "#e74c3c" : "#27ae60")">
+                            ₱@string.Format("{0:N2}", bal)
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<!-- ── ADMIN VIEW: Recent Tables ── -->
+@if (Session["Role"].ToString() == "Admin")
+{
+    <div class="row">
+
+        <!-- Recent Students Table -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-users"></i> Recently Registered Students
+                    <!-- Search input for recent students -->
+                    <input type="text"
+                           id="searchStudents"
+                           class="form-control input-sm no-print"
+                           placeholder="Search..."
+                           style="width:150px;display:inline-block;
+                                  margin-left:10px" />
+                </div>
+                <div class="card-body" style="padding:0">
+                    <table class="table table-striped table-condensed"
+                           id="recentStudentsTable">
+                        <thead>
+                            <tr>
+                                <th>Student No.</th>
+                                <th>Name</th>
+                                <th>Course</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.RecentStudents != null)
+                            {
+                                var students = ViewBag.RecentStudents
+                                               as System.Data.DataTable;
+                                foreach (System.Data.DataRow row in students.Rows)
+                                {
+                                    <tr>
+                                        <td>@row["StudentNumber"]</td>
+                                        <td>@row["FullName"]</td>
+                                        <td>@row["CourseName"]</td>
+                                        <td>
+                                            <span class="status-badge badge-enrolled">
+                                                @row["EnrollmentStatus"]
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-body" style="padding:10px;border-top:1px solid #eee">
+                    <a href="@Url.Action("Index","Student")"
+                       class="btn btn-xs btn-default">
+                        View All Students
+                        <i class="fa fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Payments Table -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-credit-card"></i> Recent Payments
+                    <!-- Search input for recent payments -->
+                    <input type="text"
+                           id="searchPayments"
+                           class="form-control input-sm no-print"
+                           placeholder="Search..."
+                           style="width:150px;display:inline-block;
+                                  margin-left:10px" />
+                </div>
+                <div class="card-body" style="padding:0">
+                    <table class="table table-striped table-condensed"
+                           id="recentPaymentsTable">
+                        <thead>
+                            <tr>
+                                <th>OR No.</th>
+                                <th>Student</th>
+                                <th>Term</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.RecentPayments != null)
+                            {
+                                var payments = ViewBag.RecentPayments
+                                               as System.Data.DataTable;
+                                foreach (System.Data.DataRow row in payments.Rows)
+                                {
+                                    <tr>
+                                        <td>@row["ORNumber"]</td>
+                                        <td>@row["StudentName"]</td>
+                                        <td>@row["TermName"]</td>
+                                        <td style="color:#27ae60;font-weight:bold">
+                                            ₱@string.Format("{0:N2}",
+                                             row["AmountPaid"])
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-body" style="padding:10px;border-top:1px solid #eee">
+                    <a href="@Url.Action("Index","Payment")"
+                       class="btn btn-xs btn-default">
+                        View All Payments
+                        <i class="fa fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+@section scripts {
+    <script src="~/Scripts/myScript/dashboard.js"></script>
+}
