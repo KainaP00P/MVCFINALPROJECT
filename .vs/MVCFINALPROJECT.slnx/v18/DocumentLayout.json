@@ -3,12 +3,44 @@
   "WorkspaceRootPath": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|c:\\users\\mikna\\source\\repos\\mvcfinalproject\\mvcfinalproject\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|solutionrelative:mvcfinalproject\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|c:\\users\\mikna\\source\\repos\\mvcfinalproject\\mvcfinalproject\\views\\report\\assessmentreport.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|solutionrelative:mvcfinalproject\\views\\report\\assessmentreport.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\mvcfinalproject\\controllers\\assessmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|solutionrelative:mvcfinalproject\\controllers\\assessmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|c:\\users\\mikna\\source\\repos\\mvcfinalproject\\mvcfinalproject\\views\\assessment\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|solutionrelative:mvcfinalproject\\views\\assessment\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|c:\\users\\mikna\\source\\repos\\mvcfinalproject\\mvcfinalproject\\views\\account\\changepassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|solutionrelative:mvcfinalproject\\views\\account\\changepassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|c:\\users\\mikna\\source\\repos\\mvcfinalproject\\mvcfinalproject\\views\\report\\studentledger.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|solutionrelative:mvcfinalproject\\views\\report\\studentledger.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|c:\\users\\mikna\\source\\repos\\mvcfinalproject\\mvcfinalproject\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|solutionrelative:mvcfinalproject\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|c:\\users\\mikna\\source\\repos\\mvcfinalproject\\mvcfinalproject\\views\\report\\studentledgerdetail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|solutionrelative:mvcfinalproject\\views\\report\\studentledgerdetail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|c:\\users\\mikna\\source\\repos\\mvcfinalproject\\mvcfinalproject\\views\\payment\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|solutionrelative:mvcfinalproject\\views\\payment\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|c:\\users\\mikna\\source\\repos\\mvcfinalproject\\mvcfinalproject\\views\\assessment\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|solutionrelative:mvcfinalproject\\views\\assessment\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|c:\\users\\mikna\\source\\repos\\mvcfinalproject\\mvcfinalproject\\views\\payment\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|solutionrelative:mvcfinalproject\\views\\payment\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|c:\\users\\mikna\\source\\repos\\mvcfinalproject\\mvcfinalproject\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8D2E205C-0369-477F-8F14-A5750F11EC68}|MVCFINALPROJECT\\MVCFINALPROJECT.csproj|solutionrelative:mvcfinalproject\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\mikna\\AppData\\Local\\Temp\\5h5o1ltr..sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|"
@@ -21,7 +53,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 193,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,6 +62,123 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "ChangePassword.cshtml",
+              "DocumentMoniker": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Account\\ChangePassword.cshtml",
+              "RelativeDocumentMoniker": "MVCFINALPROJECT\\Views\\Account\\ChangePassword.cshtml",
+              "ToolTip": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Account\\ChangePassword.cshtml",
+              "RelativeToolTip": "MVCFINALPROJECT\\Views\\Account\\ChangePassword.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-10T11:54:36.926Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "StudentLedger.cshtml",
+              "DocumentMoniker": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Report\\StudentLedger.cshtml",
+              "RelativeDocumentMoniker": "MVCFINALPROJECT\\Views\\Report\\StudentLedger.cshtml",
+              "ToolTip": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Report\\StudentLedger.cshtml",
+              "RelativeToolTip": "MVCFINALPROJECT\\Views\\Report\\StudentLedger.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-10T11:54:00.156Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "MVCFINALPROJECT\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "MVCFINALPROJECT\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAABYBAAAAAAAAAAAUwDABAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-10T11:49:48.637Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AssessmentReport.cshtml",
+              "DocumentMoniker": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Report\\AssessmentReport.cshtml",
+              "RelativeDocumentMoniker": "MVCFINALPROJECT\\Views\\Report\\AssessmentReport.cshtml",
+              "ToolTip": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Report\\AssessmentReport.cshtml",
+              "RelativeToolTip": "MVCFINALPROJECT\\Views\\Report\\AssessmentReport.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-10T11:44:20.328Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Assessment\\Index.cshtml",
+              "RelativeDocumentMoniker": "MVCFINALPROJECT\\Views\\Assessment\\Index.cshtml",
+              "ToolTip": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Assessment\\Index.cshtml",
+              "RelativeToolTip": "MVCFINALPROJECT\\Views\\Assessment\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHsAAABOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-10T11:44:01.046Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "StudentLedgerDetail.cshtml",
+              "DocumentMoniker": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Report\\StudentLedgerDetail.cshtml",
+              "RelativeDocumentMoniker": "MVCFINALPROJECT\\Views\\Report\\StudentLedgerDetail.cshtml",
+              "ToolTip": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Report\\StudentLedgerDetail.cshtml",
+              "RelativeToolTip": "MVCFINALPROJECT\\Views\\Report\\StudentLedgerDetail.cshtml",
+              "ViewState": "AgIAAPkAAAAAAAAAAAAwwBMBAABPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-10T11:43:36.999Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Payment\\Details.cshtml",
+              "RelativeDocumentMoniker": "MVCFINALPROJECT\\Views\\Payment\\Details.cshtml",
+              "ToolTip": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Payment\\Details.cshtml",
+              "RelativeToolTip": "MVCFINALPROJECT\\Views\\Payment\\Details.cshtml",
+              "ViewState": "AgIAAFYAAAAAAAAAAAAwwHwAAAB1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-10T11:42:38.345Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Assessment\\Details.cshtml",
+              "RelativeDocumentMoniker": "MVCFINALPROJECT\\Views\\Assessment\\Details.cshtml",
+              "ToolTip": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Assessment\\Details.cshtml",
+              "RelativeToolTip": "MVCFINALPROJECT\\Views\\Assessment\\Details.cshtml",
+              "ViewState": "AgIAAKkAAAAAAAAAAAAwwMMAAABPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-10T11:42:07.452Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Payment\\Index.cshtml",
+              "RelativeDocumentMoniker": "MVCFINALPROJECT\\Views\\Payment\\Index.cshtml",
+              "ToolTip": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Views\\Payment\\Index.cshtml",
+              "RelativeToolTip": "MVCFINALPROJECT\\Views\\Payment\\Index.cshtml",
+              "ViewState": "AgIAAFsAAAAAAAAAAAAwwHsAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-10T11:41:36.39Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "5h5o1ltr..sql",
               "DocumentMoniker": "C:\\Users\\mikna\\AppData\\Local\\Temp\\5h5o1ltr..sql",
               "RelativeDocumentMoniker": "..\\..\\..\\AppData\\Local\\Temp\\5h5o1ltr..sql",
@@ -40,25 +189,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AssessmentController.cs",
-              "DocumentMoniker": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Controllers\\AssessmentController.cs",
-              "RelativeDocumentMoniker": "MVCFINALPROJECT\\Controllers\\AssessmentController.cs",
-              "ToolTip": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Controllers\\AssessmentController.cs",
-              "RelativeToolTip": "MVCFINALPROJECT\\Controllers\\AssessmentController.cs",
-              "ViewState": "AgIAADYAAAAAAAAAAAAowEAAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-03T09:52:14.588Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 9,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "MVCFINALPROJECT\\Controllers\\AccountController.cs",
               "ToolTip": "C:\\Users\\mikna\\source\\repos\\MVCFINALPROJECT\\MVCFINALPROJECT\\Controllers\\AccountController.cs",
               "RelativeToolTip": "MVCFINALPROJECT\\Controllers\\AccountController.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAAowCEAAAAZAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAABGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-03T09:52:10.673Z",
               "EditorCaption": ""

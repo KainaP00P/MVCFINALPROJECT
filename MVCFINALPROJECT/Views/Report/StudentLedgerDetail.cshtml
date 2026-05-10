@@ -273,8 +273,7 @@
                                         ₱@string.Format("{0:N2}", row["AmountPaid"])
                                     </td>
                                     <td>
-                                        @Convert.ToDateTime(row["PaymentDate"])
-                                        .ToString("MMM dd, yyyy")
+                                        @Convert.ToDateTime(row["PaymentDate"]).ToString("MMM dd, yyyy")
                                     </td>
                                     <td>@row["PaymentMethod"]</td>
                                     <td>@row["ReceivedByName"]</td>

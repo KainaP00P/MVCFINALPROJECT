@@ -292,7 +292,7 @@
 
                     <li class="sidebar-label">Reports</li>
 
-                    <li class="@(ViewBag.ActiveMenu == "Report" ? "active" : "")">
+                    <li class="@(ViewBag.ActiveMenu == "StudentLedger" ? "active" : "")">
                         <a href="@Url.Action("StudentLedger", "Report")">
                             <i class="fa fa-bar-chart"></i> Student Ledger
                         </a>
@@ -308,7 +308,7 @@
                 <!-- Divider before account options -->
                 <li class="sidebar-label">Account</li>
 
-                <li>
+                <li class="@(ViewBag.ActiveMenu == "ChangePassword" ? "active" : "")">
                     <a href="@Url.Action("ChangePassword", "Account")">
                         <i class="fa fa-key"></i> Change Password
                     </a>
